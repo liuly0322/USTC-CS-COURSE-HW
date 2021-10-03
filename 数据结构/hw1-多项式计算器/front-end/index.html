@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多项式乘法计算器</title>
+    <link rel="stylesheet" href="./main.css">
+    <script>
+        window.MathJax = {
+          tex: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            processEscapes: true
+          },
+          options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+          }
+        };
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.min.js" async=""></script>
+</head>
+
+<body>
+    <p class="title">简易多项式计算器</p>
+    <p>输入多项式表达式后点击运算即可。</p>
+    <script src="./main.js"></script>
+    <div class="fun">
+        <div class="wrap">多项式1：<input type="text" id="p1"></div>
+        <div class="wrap">多项式2：<input type="text" id="p2"></div>
+        <button onclick="add()">加法</button>
+        <button onclick="minus()">减法</button>
+        <button onclick="multi()">乘法</button>
+        <button onclick="divide()">除法</button>
+        <div id="res1" class="res" style="display: none;"></div>
+    </div>
+
+    <div class="fun">
+        <div class="wrap">多项式3：<input type="text" id="p3"></div>
+        <div class="wrap">求某点的值：<input type="number" id="x"></div>
+        <button onclick="diff()">求导</button>
+        <button onclick="getValue()">求值</button>
+        <div id="res2" class="res" style="display: none;"></div>
+    </div>
+
+</body>
+
+</html>

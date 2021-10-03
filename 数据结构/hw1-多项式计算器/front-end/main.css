@@ -1,0 +1,20 @@
+body{
+    text-align: center;
+}
+
+.title{
+    font-weight: bold;
+    font-size: 2.5em;
+}
+
+.fun{
+    margin: 20px;
+}
+
+.wrap{
+    padding: 20px;
+}
+
+.res{
+    margin-top: 20px;
+}
