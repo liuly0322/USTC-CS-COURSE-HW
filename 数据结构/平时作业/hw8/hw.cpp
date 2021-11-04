@@ -12,7 +12,8 @@ int treeInit(Tree trees[], int degrees[]) {
         trees[i]->firstChild = trees[j + 1];
         for (int k = j + 1; k < j + degrees[i]; k++)
             trees[k]->nextSibling = trees[k + 1];
-        trees[j + degrees[i]]->nextSibling = nullptr;
+		if (degrees[i])
+			trees[j + degrees[i]]->nextSibling = nullptr;
         j += degrees[i];
     }
     return 0;

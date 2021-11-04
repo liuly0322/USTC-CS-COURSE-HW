@@ -8,7 +8,7 @@
 
 ```cpp
 // 约定传入参数为结点数组和度数数组，现在的要求是把它们合理的连接起来。
-// 这里假设结点数组最后一项为空指针
+// 这里假设结点数组最后一项为空指针(重要!)
 int treeInit(Tree trees[], int degrees[]) {
     if (!trees[0])
         return 1;
@@ -19,7 +19,8 @@ int treeInit(Tree trees[], int degrees[]) {
         trees[i]->firstChild = trees[j + 1];
         for (int k = j + 1; k < j + degrees[i]; k++)
             trees[k]->nextSibling = trees[k + 1];
-        trees[j + degrees[i]]->nextSibling = nullptr;
+		if (degrees[i])		// 如果有子结点
+			trees[j + degrees[i]]->nextSibling = nullptr;
         j += degrees[i];
     }
     return 0;
