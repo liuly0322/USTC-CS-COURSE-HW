@@ -7,14 +7,12 @@ int treeInit(Tree trees[], int degrees[]) {
         return 1;
     trees[0]->nextSibling = nullptr;
     int j = 0;
-    for (int i = 0; trees[i]; i++) {
+    for (int i = 0; trees[i]; i++, j += degrees[i]) {
+        trees[i]->firstChild = degrees[i] ? trees[j + 1] : nullptr;
         // 这个结点的孩子从 j + 1 到 j + degrees[i]
-        trees[i]->firstChild = trees[j + 1];
         for (int k = j + 1; k < j + degrees[i]; k++)
             trees[k]->nextSibling = trees[k + 1];
-		if (degrees[i])
-			trees[j + degrees[i]]->nextSibling = nullptr;
-        j += degrees[i];
+        trees[j + degrees[i]]->nextSibling = nullptr;
     }
     return 0;
 }

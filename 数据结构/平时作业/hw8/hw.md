@@ -2,7 +2,7 @@
 
 <div style="text-align:center;font-size:1.5em">刘良宇 PB20000180</div>
 
-## 6.68: 
+## 6.68:
 
 已知一棵树的由根至叶子结点按层次输入的结点序列及每个结点的度（每层中自左至右输入），试写出构造此树的孩子-兄弟链表的算法。
 
@@ -14,20 +14,18 @@ int treeInit(Tree trees[], int degrees[]) {
         return 1;
     trees[0]->nextSibling = nullptr;
     int j = 0;
-    for (int i = 0; trees[i]; i++) {
+    for (int i = 0; trees[i]; i++, j += degrees[i]) {
+        trees[i]->firstChild = degrees[i] ? trees[j + 1] : nullptr;
         // 这个结点的孩子从 j + 1 到 j + degrees[i]
-        trees[i]->firstChild = trees[j + 1];
         for (int k = j + 1; k < j + degrees[i]; k++)
             trees[k]->nextSibling = trees[k + 1];
-		if (degrees[i])		// 如果有子结点
-			trees[j + degrees[i]]->nextSibling = nullptr;
-        j += degrees[i];
+        trees[j + degrees[i]]->nextSibling = nullptr;
     }
     return 0;
 }
 ```
 
-## 6.71: 
+## 6.71:
 
 假设树上每个结点所含的数据元素为一个字母，并且以孩子-兄弟链表为树的存储结构，试写一个按凹入表方式打印一棵树的算法。
 
