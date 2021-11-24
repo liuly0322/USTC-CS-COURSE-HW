@@ -1,7 +1,13 @@
-#define MAX 100
+<div style="text-align:center;font-size:2.5em;font-weight:bold">数据结构 hw10</div>
 
-// 7.28 已知有向图和图中两个顶点 u, v, 编写算法求 u 到 v 所有简单路径
-// 假设所有路径存储在二维数组 int[100][100] 中，num 标识有多少条路径
+<div style="text-align:center;font-size:1.5em">刘良宇 PB20000180</div>
+
+## 7.28
+
+编写算法求 u 到 v 所有简单路径。
+
+```cpp
+// 假设所有路径存储在二维数组 int[100][100] 中
 
 int path_num = 0;            // 一共多少条路径
 int path[100][100] = {{0}};  // 路径。每条路径以 v 结束
@@ -26,11 +32,22 @@ void find_path(Graph& G, int u, int v, int depth = 0) {
         find_path(G, p->adjVex, v, depth + 1);
     }
 }
+```
 
-// 7.31 试完善求有向图的强连通分量的算法
-// 从一个 v 出发，得到所有从 v 单向可达的顶点，再从这些顶点（倒着）遍历
+手工执行算法。得到下面几条简单路径：
 
-// 采用十字链表完成（相当于稀疏的邻接矩阵，但不一定有序）
+```mermaid
+graph LR
+1[u]---2[a]---3[b]---4[f]---5[v]
+11[u]---6[c]---7[d]---8[e]---9[f]---10[v]
+12[u]---13[c]---14[d]---15[v]
+```
+
+## 7.31
+
+试完善求有向图的强连通分量的算法。采用十字链表完成。
+
+```cpp
 bool visited[MAX];
 int count;          // 完成搜索的结点个数
 int finished[MAX];  // 完成的次序映射到结点编号
@@ -72,6 +89,7 @@ void dfs(Grapg& G, int v) {
     finished[++count] = v;
 }
 
+// 逆序遍历
 void head_dfs(Graph& G, int v) {
     visited[v] = true;
     set[pieces][set_num[pieces]] = v;
@@ -81,11 +99,13 @@ void head_dfs(Graph& G, int v) {
             dfs(G, p->tailvex);
     }
 }
+```
 
-// 7.37 试设计一个求有向无环图中最长路径的算法并估计其时间复杂度
+## 7.37
 
-// 假设以邻接表方式
+试设计一个求有向无环图中最长路径的算法并估计其时间复杂度。假设以邻接表方式存储：
 
+```cpp
 int path[MAX];  // 最长路径中，从某一点出发，下一个顶点应该是什么
 int start_posi;  // 起点
 int dp[MAX];  // 记录每一点开始的"最深深度"。也就是假设v没有out，则dp[v] = 1
@@ -120,9 +140,13 @@ int longest_v_path(Graph& G, int v) {
 
     return dp[v];
 }
+```
 
-// 9.26 试将折半查找的算法改写成递归算法
+## 9.26
 
+试将折半查找的算法改写成递归算法。
+
+```cpp
 int binary_search(table& st, int key) {
     return search(st, key, 1, st.length);
 }
@@ -138,9 +162,15 @@ int search(table& st, int key, int low, int high) {
     else
         return search(st, key, mid + 1, high);
 }
+```
 
-// 9.28 试编写利用折半查找确定记录所在块的分块查找算法
 
+
+## 9.28
+
+试编写利用折半查找确定记录所在块的分块查找算法。
+
+```cpp
 // 假设 1 到 n 项存储数据， n == length
 // 假设 max_key[length + 1] = +\infin
 // 假设 max_key[0] = -\infin
@@ -175,5 +205,22 @@ int block_search(table& st, index_table& idx,int key){
     }
     return 0;
 }
+```
 
-// 讨论块中使用监视哨的优缺点，并指出必要时如何实现
+
+
+讨论块中顺序查找时使用监视哨的优缺点，并指出必要时如何实现。
+
+顺序查找时若要使用监视哨，则需要在块与块之间添加一个空结点，每次查找时置对应的空结点为待查找的 key。这样做优点是省略了每次查找时的判断边界的过程，缺点是增大了空间占用，尤其是当每一块元素个数比较少的时候。
+
+如果必要时需要实现，那么例如对于索引表：
+
+|            |      |      |      |          |
+| :--------: | ---- | ---- | ---- | -------- |
+| 最大关键字 | 22   | 48   | 86   | $\infin$ |
+|  起始地址  | 1    | 7    | 13   | 34       |
+|            |      |      |      |          |
+
+不妨增加末尾一个空结点表示表长。
+
+6，12，33 结点都应是空结点，可用于被设置为监视哨。当顺序查找返回这些值时，查找函数返回 0 （没找到）。
