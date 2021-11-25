@@ -58,4 +58,75 @@
 
 ## 实验练习
 
+### 题目 1
+
+请通过实验中给出的可编程逻辑单元、交叉互连矩阵及 IOB 电路图，实现如下代码，并将其输出到引脚 B 上。给出配置数据和电路截图。
+
+```verilog
+module test(input clk,
+            output reg a);
+    always@(posedge clk)
+        a <= a ^ 1'b1;
+endmodule
+```
+
+这里对原电路略做更改：第三个输出端对应引脚 B ，所以应该由它给予反馈信号。按要求改变配置数据后（见电路图中），即可实现上述的代码功能。
+
+电路图：
+
+![](image/1.png)
+
+### 题目 2.
+
+实验中的开关和 LED 的对应关系是相反的，即最左侧的开关控制最右侧的 LED，最右侧的开关控制最左侧的 LED，请修改实验中给出的 XDC 文件，使开关和 LED 一一对应（最左侧的开关控制最左侧的 LED）
+
+更改相关端口，写出约束文件如下：
+
+![](image/2.png)
+
+生成 `.bit` 文件，平台上烧写后结果如下：
+
+![](image/3.png)
+
+### 题目 3
+
+设计一个 30 位计数器，每个时钟周期加 1，用右侧的 8 个 LED 表示计数器的高 8 位，观察实际运行结果。将该计数器改成 32 位，将高 8 位输出到 LED，与前面的运行结果进行对比，分析结果及时钟信号在其中所起的作用。
+
+首先写出计数器设计：
+
+```verilog
+module test(input clk,
+            output reg [7:0] led);
+    reg [29:0] count = 0;
+    always@(posedge clk) begin
+        count <= count + 1;
+        led   <= count[29:22];
+    end
+endmodule
+```
+
+约束文件不再需要开关。删除掉开关部分即可。
+
+实际运行结果在实验检查过程中已经检查。此处不再体现。
+
+更改为 32 位只需要稍微调整计时器模块设计即可：
+
+```verilog
+module test(input clk,
+            output reg [7:0] led);
+    reg [31:0] count = 0;
+    always@(posedge clk) begin
+        count <= count + 1;
+        led   <= count[31:24];
+    end
+endmodule
+```
+
+即可得到新的 bit 文件。相比前面的运行结果，变化慢了四倍。
+
 ## 总结与思考
+
+- 本次实验使我初步认识了 FPGA，并了解了通过 Vivado 综合 FPGA 的过程，总体收获较大。
+- 本次实验难度适中。
+- 任务量合适，但是  Generate Bitstream 需要时间较长。
+- 建议：无。
