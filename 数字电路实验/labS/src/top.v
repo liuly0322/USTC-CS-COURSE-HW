@@ -2,6 +2,7 @@
 `include "rx.v"
 `include "mem.v"
 `include "bytestohex.v"
+`include "hextobytes.v"
 
 module top(input clk,
            rst,
@@ -9,12 +10,17 @@ module top(input clk,
            output tx);
     
     // 状态机状态
-    parameter S_INPUT = 4'b0000;		// 等待数据写入，可作为初始状态
-    parameter S_PARSE = 4'b0001;		// 解析缓冲区指令
-    parameter S_READ = 4'b0010;		    // 从内存中读取数据
-    parameter S_SEND = 4'b0011;		    // 发送内存数据
-    parameter S_WRITE = 4'b0100;        // 写入内存数据
-    parameter S_EXEC  = 4'b0101;        // 执行命令
+    parameter S_INPUT       = 4'b0000;		// 等待数据写入，可作为初始状态
+    parameter S_PARSE       = 4'b0001;		// 解析缓冲区指令
+    parameter S_SEND_UPDATE = 4'b0010;
+    parameter S_SEND        = 4'b0011;		// 发送内存数据
+    parameter S_WRITE       = 4'b0100;      // 写入内存数据
+    parameter S_FETCH       = 4'b0101;      // 取指令
+    parameter S_IR          = 4'b0110;
+    parameter S_OP          = 4'b0111;      // 执行操作
+    parameter S_PC          = 4'b1000;      // pc 改为增加后结果
+    parameter S_LD          = 4'b1001;      // LD 指令临时跳转状态
+    parameter S_LDR         = 4'b1010;      // LDR 指令临时跳转状态
     
     reg [3:0] curr_state;
     reg [3:0] next_state;
@@ -25,6 +31,16 @@ module top(input clk,
     reg write_enable;
     wire [15:0] mem_out;
     dist_mem_gen_0 mem(.a(address),.d(write),.clk(clk),.we(write_enable),.spo(mem_out));
+    
+    // 寄存器
+    reg signed [15:0] R[7:0];    // 用于判断 nzp
+    reg signed [15:0] temp;      // 加
+    reg [2:0] reg_temp;          // 临时保存寄存器信息
+    reg [2:0] send_temp;
+    reg [11:0] pc;
+    reg [11:0] pc_temp;
+    reg [15:0] ir;
+    reg n,z,p;
     
     // 读端口 & buffer 区
     wire        [7:0]   rx_data;
@@ -77,9 +93,15 @@ module top(input clk,
     bytestohex w4(.bytes(buffer[9]),.address(write_value[3:0]));
     
     // 写端口
-    wire                tx_ready;
-    wire        [7:0]   tx_data;
-    assign  tx_ready = rx_vld;
+    reg [2:0] send_count;
+    wire [7:0] out_ascii[4:0];       // 四个 16 进制数，一个换行
+    hextobytes o1(.hex(mem_out[15:12]),.bytes(out_ascii[0]));
+    hextobytes o2(.hex(mem_out[11:8]),.bytes(out_ascii[1]));
+    hextobytes o3(.hex(mem_out[7:4]),.bytes(out_ascii[2]));
+    hextobytes o4(.hex(mem_out[3:0]),.bytes(out_ascii[3]));
+    assign out_ascii[4] = 8'h0a;
+    reg                 tx_ready;
+    reg         [7:0]   tx_data;
     tx                  tx_inst(
     .clk                (clk),
     .rst                (rst),
@@ -89,9 +111,9 @@ module top(input clk,
     .tx_data            (tx_data)
     );
     
-    // 状态机转换
+    // 输入输出状态机转换
     always @(posedge clk) begin
-        next_state <= curr_state;
+        curr_state <= next_state;
     end
     always@(*)
     begin
@@ -99,7 +121,7 @@ module top(input clk,
             S_INPUT: next_state = read_finished ? S_PARSE : S_INPUT;
             S_PARSE: begin
                 if (buffer[0] == 8'h72) begin       // r
-                    next_state   = S_READ;
+                    next_state   = S_SEND;
                     address      = read_address;
                     write_enable = 1'b0;
                 end
@@ -110,13 +132,155 @@ module top(input clk,
                     write_enable = 1'b1;
                 end
                 else begin                          // e
-                    next_state = S_EXEC;
-                    // to be done
+                    next_state = S_FETCH;
+                    pc         = read_address;
                 end
             end
-            S_READ: next_state  = S_SEND;
+            S_FETCH: begin
+                next_state   = S_IR;
+                address      = pc;
+                write_enable = 1'b0;
+                pc_temp      = pc + 12'b1;
+            end
+            S_IR: begin
+                next_state = S_OP;
+                ir         = mem_out;
+                pc         = pc_temp;
+            end
+            S_PC: begin
+                pc         = temp[11:0];
+                next_state = S_FETCH;
+            end
+            S_LD: begin
+                R[reg_temp] = mem_out;
+                next_state  = S_FETCH;
+                if (R[reg_temp] > 16'h0000) 
+                    {n,z,p} = {1'b0,1'b0,1'b1};
+                else if (R[reg_temp] == 16'h0000)
+                    {n,z,p} = {1'b0, 1'b1,1'b0};
+                else {n,z,p} = {1'b1,1'b0,1'b0};
+            end
+            S_LDR: begin
+                R[reg_temp] = mem_out;
+                next_state  = S_FETCH;
+                if (R[reg_temp] > 16'h0000) 
+                    {n,z,p} = {1'b0,1'b0,1'b1};
+                else if (R[reg_temp] == 16'h0000)
+                    {n,z,p} = {1'b0, 1'b1,1'b0};
+                else {n,z,p} = {1'b1,1'b0,1'b0};
+            end
+            S_OP: begin
+                case (ir[15:12])
+                    4'b0001: begin  // add
+                        if (ir[5])
+                            R[ir[11:9]]      = (R[ir[8:6]] + {{11{ir[4]}}, ir[4:0]});
+                            else R[ir[11:9]] = R[ir[8:6]] + R[ir[2:0]];
+                        
+                        // 条件寄存器
+                        if (R[ir[11:9]] > 16'h0000)
+                            {n,z,p} = {1'b0, 1'b0, 1'b1};
+                        else if (R[ir[11:9]] == 16'h0000)
+                            {n,z,p} = {1'b0, 1'b1, 1'b0};
+                        else
+                            {n,z,p} = {1'b1, 1'b0, 1'b0};
+                        
+                        next_state = S_FETCH;
+                    end
+                    4'b0101: begin  // and
+                        if (ir[5])
+                            R[ir[11:9]] = (R[ir[8:6]] & {{11{ir[4]}}, ir[4:0]});
+                        else
+                            R[ir[11:9]] = (R[ir[8:6]] & R[ir[2:0]]);
+                        
+                        // 条件寄存器
+                        if (R[ir[11:9]] > 16'h0000)
+                            {n,z,p} = {1'b0, 1'b0, 1'b1};
+                        else if (R[ir[11:9]] == 16'h0000)
+                            {n,z,p} = {1'b0, 1'b1, 1'b0};
+                        else
+                            {n,z,p} = {1'b1, 1'b0, 1'b0};
+                        
+                        next_state = S_FETCH;
+                    end
+                    4'b1001: begin  // not
+                        temp    = (~R[ir[8:6]]);
+                        R[ir[11:9]] = temp;
+                        
+                        //设置条件寄存器
+                        if (R[ir[11:9]] > 16'h0000)
+                            {n,z,p} = {1'b0, 1'b0, 1'b1};
+                        else if (R[ir[11:9]] == 16'h0000)
+                            {n,z,p} = {1'b0, 1'b1, 1'b0};
+                        else
+                            {n,z,p} = {1'b1, 1'b0, 1'b0};
+                        
+                        next_state = S_FETCH;
+                    end
+                    4'b0000: begin  // br
+                        if (ir == 16'h0)
+                            next_state = S_INPUT;
+                        else if ({n & ir[11], z & ir[10], p & ir[9]}) begin
+                            temp[11:0]   = pc + {{3{ir[8]}}, ir[8:0]};
+                            next_state   = S_PC;
+                        end
+                        else next_state = S_FETCH;
+                    end
+                    4'b1100: begin  // jmp
+                        pc = R[ir[8:6]][11:0];
+                        next_state = S_FETCH;
+                    end
+                    4'b0010: begin  // ld
+                        address      = pc + {{3{ir[8]}}, ir[8:0]};
+                        write_enable = 1'b0;
+                        reg_temp = ir[11:9];
+                        next_state = S_LD;
+                    end
+                    4'b0110: begin  // ldr
+                        address      = R[ir[8:6]] + {{6{ir[5]}}, ir[5:0]};
+                        write_enable = 1'b0;
+                        reg_temp = ir[11:9];
+                        next_state = S_LDR;
+                    end
+                    4'b1110: begin  // lea
+                        R[ir[11:9]] = {4'b0, pc + {{3{ir[8]}}, ir[8:0]}};
+                        next_state = S_FETCH;
+                    end
+                    4'b0111: begin  // str
+                        address      = R[ir[8:6]] + {{6{ir[5]}}, ir[5:0]};
+                        write_enable = 1'b1;
+                        write        = R[ir[11:9]];
+                        next_state   = S_FETCH;
+                    end
+                    default: next_state = S_INPUT;
+                endcase
+            end
+            S_WRITE: begin
+                write_enable = 1'b0;
+                next_state   = S_INPUT;
+            end
+            S_SEND: begin // 读取 out_ascii 并发送
+                if (tx_rd) begin
+                    send_temp  = send_count + 3'b1;
+                    next_state = S_SEND_UPDATE;
+                end
+                else begin
+                    next_state = S_SEND;
+                    tx_data    = out_ascii[send_count];
+                    tx_ready   = 1'b1;
+                end
+            end
+            S_SEND_UPDATE: begin
+                if (send_temp == 3'b101) begin
+                    send_count = 0;
+                    tx_ready   = 1'b0;
+                    next_state = S_INPUT;
+                end
+                else begin
+                    send_count = send_temp;
+                    next_state = S_SEND;
+                end
+            end
             default: next_state = S_INPUT;
         endcase
     end
-    
 endmodule
