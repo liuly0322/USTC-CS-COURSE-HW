@@ -1,20 +1,16 @@
-`include "tx.v"
 `include "rx.v"
 `include "mem.v"
 `include "bytestohex.v"
-`include "hextobytes.v"
 
 module top(input clk,
            rst,
            input rx,
-           output tx,
            output reg [2:0] hexplay_an,
            output reg [3:0] hexplay_data);
     
     // 状态机状态
     parameter S_INPUT       = 4'b0000;		// 等待数据写入，可作为初始状态
     parameter S_PARSE       = 4'b0001;		// 解析缓冲区指令
-    parameter S_SEND_UPDATE = 4'b0010;
     parameter S_SEND        = 4'b0011;		// 发送内存数据
     parameter S_WRITE       = 4'b0100;      // 写入内存数据
     parameter S_FETCH       = 4'b0101;      // 取指令
@@ -101,30 +97,10 @@ module top(input clk,
     bytestohex w2(.bytes(buffer[7]),.address(write_value[11:8]));
     bytestohex w3(.bytes(buffer[8]),.address(write_value[7:4]));
     bytestohex w4(.bytes(buffer[9]),.address(write_value[3:0]));
-    
-    // 写端口
-    wire tx_rd;
-    reg [2:0] send_count;
-    initial send_count = 3'b0;
-    wire [7:0] out_ascii[4:0];       // 四个 16 进制数，一个换行
-    hextobytes o1(.hex(mem_out[15:12]),.bytes(out_ascii[0]));
-    hextobytes o2(.hex(mem_out[11:8]),.bytes(out_ascii[1]));
-    hextobytes o3(.hex(mem_out[7:4]),.bytes(out_ascii[2]));
-    hextobytes o4(.hex(mem_out[3:0]),.bytes(out_ascii[3]));
-    assign out_ascii[4] = 8'h0a;
-    reg                 tx_ready;
-    initial             tx_ready = 1'b0;
-    reg         [7:0]   tx_data;
-    tx                  tx_inst(
-    .clk                (clk),
-    .rst                (rst),
-    .tx                 (tx),
-    .tx_ready           (tx_ready),
-    .tx_rd              (tx_rd),
-    .tx_data            (tx_data)
-    );
-    
-    // 输入输出状态机转换
+
+    reg [3:0] mem_out_reg[3:0];
+
+    // 状态机转换
     always @(posedge clk) begin
         curr_state <= next_state;
     end
@@ -149,10 +125,12 @@ module top(input clk,
                     write        = write_value;
                     write_enable = 1'b1;
                 end
-                else begin                          // e
+                else if (buffer[0] == 8'h65) begin  // e
                     next_state = S_FETCH;
                     pc         = read_address;
                 end
+                else
+                    next_state = S_INPUT;
             end
             S_FETCH: begin
                 next_state   = S_IR;
@@ -245,24 +223,24 @@ module top(input clk,
                         else next_state = S_FETCH;
                     end
                     4'b1100: begin  // jmp
-                        pc = R[ir[8:6]][11:0];
+                        pc         = R[ir[8:6]][11:0];
                         next_state = S_FETCH;
                     end
                     4'b0010: begin  // ld
                         address      = pc + {{3{ir[8]}}, ir[8:0]};
                         write_enable = 1'b0;
-                        reg_temp = ir[11:9];
-                        next_state = S_LD;
+                        reg_temp     = ir[11:9];
+                        next_state   = S_LD;
                     end
                     4'b0110: begin  // ldr
                         address      = R[ir[8:6]] + {{6{ir[5]}}, ir[5:0]};
                         write_enable = 1'b0;
-                        reg_temp = ir[11:9];
-                        next_state = S_LDR;
+                        reg_temp     = ir[11:9];
+                        next_state   = S_LDR;
                     end
                     4'b1110: begin  // lea
                         R[ir[11:9]] = {4'b0, pc + {{3{ir[8]}}, ir[8:0]}};
-                        next_state = S_FETCH;
+                        next_state  = S_FETCH;
                     end
                     4'b0111: begin  // str
                         address      = R[ir[8:6]] + {{6{ir[5]}}, ir[5:0]};
@@ -287,50 +265,34 @@ module top(input clk,
                 write_enable = 1'b0;
                 next_state   = S_FETCH;
             end
-            S_SEND: begin // 读取 out_ascii 并发送
-                if (tx_rd) begin
-                    send_temp  = send_count + 3'b1;
-                    next_state = S_SEND_UPDATE;
-                end
-                else begin
-                    next_state = S_SEND;
-                    tx_data    = out_ascii[send_count];
-                    tx_ready   = 1'b1;
-                end
-            end
-            S_SEND_UPDATE: begin
-                if (send_temp == 3'b101 || send_temp > 3'b101) begin
-                    send_count = 3'b0;
-                    tx_ready   = 1'b0;
-                    next_state = S_INPUT;
-                end
-                else begin
-                    send_count = send_temp;
-                    next_state = S_SEND;
-                end
+            S_SEND: begin
+                mem_out_reg[0] = mem_out[15:12];
+                mem_out_reg[1] = mem_out[11:8];
+                mem_out_reg[2] = mem_out[7:4];
+                mem_out_reg[3] = mem_out[3:0];
+                next_state     = S_INPUT;
             end
             default: next_state = S_INPUT;
         endcase
     end
 
-    // 输出 LED ( debug 用)
+    // 输出 LED，第一位表示当前状态，中间 3 位指示 pc， 最后四个表示读出数字
     reg [4:0] time_count;
     always @(posedge clk) begin
-        if (time_count == 5'b10111)
-            time_count <= 5'b00000;
-        else
-            time_count <= time_count + 1;
+        time_count <= time_count + 1;
     end
     
     always@(posedge clk) begin
         hexplay_an <= time_count[4:2];
         case (time_count[4:2])
-            3'b000 : hexplay_data <= curr_state[0];
-            3'b001 : hexplay_data <= curr_state[1];
-            3'b010 : hexplay_data <= curr_state[2];
-            3'b011 : hexplay_data <= curr_state[3];
-            3'b100 : hexplay_data <= tx_ready;
-            3'b101 : hexplay_data <= tx_rd;
+            3'b000 : hexplay_data <= mem_out_reg[3];
+            3'b001 : hexplay_data <= mem_out_reg[2];
+            3'b010 : hexplay_data <= mem_out_reg[1];
+            3'b011 : hexplay_data <= mem_out_reg[0];
+            3'b100 : hexplay_data <= pc[3:0];
+            3'b101 : hexplay_data <= pc[7:4];
+            3'b110 : hexplay_data <= pc[11:8];
+            3'b111 : hexplay_data <= curr_state;
             default: hexplay_data <= 4'b0000;
         endcase
     end
