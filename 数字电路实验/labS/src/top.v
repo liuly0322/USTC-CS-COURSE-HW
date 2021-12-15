@@ -7,7 +7,9 @@
 module top(input clk,
            rst,
            input rx,
-           output tx);
+           output tx,
+           output reg [2:0] hexplay_an,
+           output reg [3:0] hexplay_data);
     
     // 状态机状态
     parameter S_INPUT       = 4'b0000;		// 等待数据写入，可作为初始状态
@@ -21,14 +23,18 @@ module top(input clk,
     parameter S_PC          = 4'b1000;      // pc 改为增加后结果
     parameter S_LD          = 4'b1001;      // LD 指令临时跳转状态
     parameter S_LDR         = 4'b1010;      // LDR 指令临时跳转状态
+    parameter S_WRITE_MEM   = 4'b1011;      // 执行需要写入的中转状态
     
     reg [3:0] curr_state;
     reg [3:0] next_state;
+
+    initial curr_state = 4'b0000;
     
     // 内存部分
     reg [11:0] address;
     reg [15:0] write;
     reg write_enable;
+    initial write_enable = 1'b0;
     wire [15:0] mem_out;
     dist_mem_gen_0 mem(.a(address),.d(write),.clk(clk),.we(write_enable),.spo(mem_out));
     
@@ -44,6 +50,7 @@ module top(input clk,
     
     // 读端口 & buffer 区
     wire        [7:0]   rx_data;
+    wire                rx_vld;
     rx                  rx_inst(
     .clk                (clk),
     .rst                (rst),
@@ -53,8 +60,10 @@ module top(input clk,
     );
     // 考虑 buffer 每个字符 [7:0]，最长 w 300 ffff 考虑给 10 个
     reg [3:0] input_cnt;        // 计数，当前在写 buffer 什么位置
+    initial input_cnt = 4'h0;
     reg [7:0] buffer[9:0];
     reg read_finished;
+    initial read_finished = 1'b0;
     always @(posedge clk) begin
         if (rx_vld) begin
             if (rx_data == 8'h0a) begin
@@ -62,7 +71,8 @@ module top(input clk,
                 input_cnt     <= 4'h0;
             end
             else begin
-                input_cnt <= input_cnt + 1;
+                read_finished <= 1'b0;
+                input_cnt     <= input_cnt + 1;
                 case (input_cnt)
                     4'h0: buffer[0]    <= rx_data;
                     4'h1: buffer[1]    <= rx_data;
@@ -93,7 +103,9 @@ module top(input clk,
     bytestohex w4(.bytes(buffer[9]),.address(write_value[3:0]));
     
     // 写端口
+    wire tx_rd;
     reg [2:0] send_count;
+    initial send_count = 3'b0;
     wire [7:0] out_ascii[4:0];       // 四个 16 进制数，一个换行
     hextobytes o1(.hex(mem_out[15:12]),.bytes(out_ascii[0]));
     hextobytes o2(.hex(mem_out[11:8]),.bytes(out_ascii[1]));
@@ -101,6 +113,7 @@ module top(input clk,
     hextobytes o4(.hex(mem_out[3:0]),.bytes(out_ascii[3]));
     assign out_ascii[4] = 8'h0a;
     reg                 tx_ready;
+    initial             tx_ready = 1'b0;
     reg         [7:0]   tx_data;
     tx                  tx_inst(
     .clk                (clk),
@@ -118,7 +131,12 @@ module top(input clk,
     always@(*)
     begin
         case (curr_state)
-            S_INPUT: next_state = read_finished ? S_PARSE : S_INPUT;
+            S_INPUT: begin
+                if (read_finished)
+                    next_state = S_PARSE;
+                else
+                    next_state = S_INPUT;
+            end
             S_PARSE: begin
                 if (buffer[0] == 8'h72) begin       // r
                     next_state   = S_SEND;
@@ -173,8 +191,9 @@ module top(input clk,
                 case (ir[15:12])
                     4'b0001: begin  // add
                         if (ir[5])
-                            R[ir[11:9]]      = (R[ir[8:6]] + {{11{ir[4]}}, ir[4:0]});
-                            else R[ir[11:9]] = R[ir[8:6]] + R[ir[2:0]];
+                            R[ir[11:9]] = (R[ir[8:6]] + {{11{ir[4]}}, ir[4:0]});
+                        else
+                            R[ir[11:9]] = R[ir[8:6]] + R[ir[2:0]];
                         
                         // 条件寄存器
                         if (R[ir[11:9]] > 16'h0000)
@@ -190,7 +209,7 @@ module top(input clk,
                         if (ir[5])
                             R[ir[11:9]] = (R[ir[8:6]] & {{11{ir[4]}}, ir[4:0]});
                         else
-                            R[ir[11:9]] = (R[ir[8:6]] & R[ir[2:0]]);
+                            R[ir[11:9]] = R[ir[8:6]] & R[ir[2:0]];
                         
                         // 条件寄存器
                         if (R[ir[11:9]] > 16'h0000)
@@ -249,7 +268,13 @@ module top(input clk,
                         address      = R[ir[8:6]] + {{6{ir[5]}}, ir[5:0]};
                         write_enable = 1'b1;
                         write        = R[ir[11:9]];
-                        next_state   = S_FETCH;
+                        next_state   = S_WRITE_MEM;
+                    end
+                    4'b0011: begin  // st
+                        address      = pc + {{3{ir[8]}}, ir[8:0]};
+                        write_enable = 1'b1;
+                        write        = R[ir[11:9]];    
+                        next_state   = S_WRITE_MEM; 
                     end
                     default: next_state = S_INPUT;
                 endcase
@@ -257,6 +282,10 @@ module top(input clk,
             S_WRITE: begin
                 write_enable = 1'b0;
                 next_state   = S_INPUT;
+            end
+            S_WRITE_MEM: begin
+                write_enable = 1'b0;
+                next_state   = S_FETCH;
             end
             S_SEND: begin // 读取 out_ascii 并发送
                 if (tx_rd) begin
@@ -270,8 +299,8 @@ module top(input clk,
                 end
             end
             S_SEND_UPDATE: begin
-                if (send_temp == 3'b101) begin
-                    send_count = 0;
+                if (send_temp == 3'b101 || send_temp > 3'b101) begin
+                    send_count = 3'b0;
                     tx_ready   = 1'b0;
                     next_state = S_INPUT;
                 end
@@ -281,6 +310,28 @@ module top(input clk,
                 end
             end
             default: next_state = S_INPUT;
+        endcase
+    end
+
+    // 输出 LED ( debug 用)
+    reg [4:0] time_count;
+    always @(posedge clk) begin
+        if (time_count == 5'b10111)
+            time_count <= 5'b00000;
+        else
+            time_count <= time_count + 1;
+    end
+    
+    always@(posedge clk) begin
+        hexplay_an <= time_count[4:2];
+        case (time_count[4:2])
+            3'b000 : hexplay_data <= curr_state[0];
+            3'b001 : hexplay_data <= curr_state[1];
+            3'b010 : hexplay_data <= curr_state[2];
+            3'b011 : hexplay_data <= curr_state[3];
+            3'b100 : hexplay_data <= tx_ready;
+            3'b101 : hexplay_data <= tx_rd;
+            default: hexplay_data <= 4'b0000;
         endcase
     end
 endmodule
