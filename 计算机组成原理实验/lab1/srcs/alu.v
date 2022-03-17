@@ -5,12 +5,13 @@ module alu #(parameter WIDTH = 32)
              output reg [WIDTH - 1: 0] y, // 运算结果
              output reg [2:0] f);         // 标志
     
+    wire a_s, b_s;
     assign a_s = ~a[WIDTH - 1];
     assign b_s = ~b[WIDTH - 1];
     
     always @(*) begin
         f = 3'b000;
-        y = 3'b000;
+        y = 0;
         case (s)
             3'b000: y = a - b;
             3'b001: y = a + b;
