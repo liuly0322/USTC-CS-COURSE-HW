@@ -1,8 +1,28 @@
-<div style="text-align:center;font-size:2em;font-weight:bold">中国科学技术大学计算机学院</div>
+<div style="text-align:center;font-size:2.5em;font-weight:bold">中国科学技术大学计算机学院</div>
 
-<div style="text-align:center;font-size:2em;font-weight:bold">《计算机组成原理实验报告》</div>
+&nbsp;
+
+<div style="text-align:center;font-size:2.5em;font-weight:bold">《计算机组成原理实验报告》</div>
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
 
 <img src="../logo.png" style="zoom: 50%;" />
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
 
 <div style="display:flex;justify-content:center;font-size:2em">
 <div>
@@ -120,6 +140,23 @@ for (int s = 0; s < 8; s++) {
 std::cout << "test finished\n";
 ```
 
+这里使用了以下函数模拟 `f` 输出的表现：
+
+```cpp
+int cmp_f(int a, int b) {
+    // 类似实现 f 的功能
+    int res = 0;
+    if (a == b)
+        res += 1;
+    if (a < b)
+        res += 2;
+    if ((unsigned)a < (unsigned)b) {
+        res += 4;
+    }
+    return res;
+}
+```
+
 测试：
 
 ![image-20220318105608218](report/image-20220318105608218.png)
@@ -205,6 +242,18 @@ endmodule
 
 利用计数器去毛刺，利用 `button_1 & ~button_2` 保证只会因为上升沿产生一个脉冲信号
 
+查看 RTL 电路图：
+
+![image-20220318133201437](report/image-20220318133201437.png)
+
+使用资源报告：
+
+![image-20220318133457167](report/image-20220318133457167.png)
+
+性能报告：
+
+![image-20220318133640919](report/image-20220318133640919.png)
+
 下面生成比特流，上板子即可（这里线下检查时已经测试过，不再附图）
 
 ### FLS 设计仿真下载
@@ -289,6 +338,87 @@ always @(posedge clk) begin
 end
 ```
 
+接下来考虑该 FLS 模块的仿真，还是使用 verilator，这里我们进行 16 位 FLS 的测试
 
+编写测试文件，测试初始载入两个值 1, 2 后的模块表现，并测试复位
+
+```cpp
+// 初始化，默认有效
+top->rstn = 1;
+
+while (!Verilated::gotFinish() && main_time < sim_time / 2 + 1) {
+    top->en = main_time % 11 < 2 ? 1 : 0;  // 每一定时间产生使能信号
+    top->clk = main_time % 2;              // 模拟时钟
+    top->d = main_time < 5 ? 1 : 2;        // 依次载入 1 和 2
+    top->eval();                           // 仿真时间步进
+    tfp->dump(main_time);                  // 波形文件写入步进
+    main_time++;
+}
+
+top->clk = 1;
+top->rstn = 0;  // 测试复位
+top->eval();
+tfp->dump(main_time);
+main_time++;
+top->rstn = 1;
+
+while (!Verilated::gotFinish() && main_time < sim_time) {
+    top->clk = main_time % 2;              // 模拟时钟
+    top->en = main_time % 11 < 2 ? 1 : 0;  // 每一定时间产生使能信号
+    top->eval();                           // 仿真时间步进
+    tfp->dump(main_time);                  // 波形文件写入步进
+    main_time++;
+}
+
+std::cout << "test finished\n";
+```
+
+从 $t=0$ 开始观察波形：
+
+![image-20220318131353123](report/image-20220318131353123.png)
+
+随着 `en` 每次触发， `f` 输出依次变为 1, 2, 3, 5, 8, 13... 符合条件
+
+观察复位信号：
+
+![image-20220318132203525](report/image-20220318132203525.png)
+
+成功起到复位作用，开始计算 2, 2, 4, 6, 10, ...
+
+接下来补上 `top` 模块后进行实际测试：
+
+```verilog
+module top(input CLK,
+           input CPU_RESETN,
+           input BTNC,
+           input [15:0] SW,
+           output [15:0] LED);
+    
+    // 去毛刺取边沿
+    wire en_edge;
+    btn_edge get_edge(.clk(CLK), .button(BTNC), .button_edge(en_edge));
+    
+    // 连接 fls 模块
+    fls fls1(.clk(CLK), .rstn(CPU_RESETN), .en(en_edge), .d(SW), .f(LED));
+endmodule
+```
+
+RTL 电路图：
+
+![image-20220318133817712](report/image-20220318133817712.png)
+
+使用资源报告：
+
+![image-20220318134021793](report/image-20220318134021793.png)
+
+性能报告：
+
+![image-20220318134049769](report/image-20220318134049769.png)
+
+下载过程已经线下检查，不再附图
 
 ## 总结与思考
+
+- 本次实验使我基本熟练掌握算术逻辑单元 (ALU) 的功能，复习组合电路和时序电路的一般设计方法，以及参数化和结构化的 Verilog 描述方法，了解查看电路性能和资源使用情况的方法
+- 本次实验难易程度适中
+- 本次实验任务量设置略有不合理，可以考虑直接设计 32 位 ALU
