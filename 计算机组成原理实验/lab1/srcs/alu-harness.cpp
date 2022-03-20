@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 
     // tfp初始化工作
     top->trace(tfp, 99);
-    tfp->open("Decoder.vcd");
+    tfp->open("alu.vcd");
 
     // 生成随机数（固定种子确保可复现）
     srand(1024);

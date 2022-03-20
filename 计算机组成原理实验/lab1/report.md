@@ -1,3 +1,5 @@
+&nbsp;
+
 <div style="text-align:center;font-size:2.5em;font-weight:bold">中国科学技术大学计算机学院</div>
 
 &nbsp;
@@ -248,11 +250,11 @@ endmodule
 
 使用资源报告：
 
-![image-20220318133457167](report/image-20220318133457167.png)
+![image-20220320173730831](report/image-20220320173730831.png)
 
 性能报告：
 
-![image-20220318133640919](report/image-20220318133640919.png)
+![image-20220320173830948](report/image-20220320173830948.png)
 
 下面生成比特流，上板子即可（这里线下检查时已经测试过，不再附图）
 
@@ -274,7 +276,7 @@ for i in range(n):
 画出下列状态转换图：
 
 ```mermaid
-graph TD
+graph LR
 LOAD_0--en-->LOAD_1--en-->WAIT--en-->ADD--->WAIT
 ```
 
@@ -296,7 +298,6 @@ always @(*) begin
         S_LOAD_1: next_state = en? S_WAIT : S_LOAD_1;
         S_WAIT: next_state   = en? S_ADD : S_WAIT;
         S_ADD: next_state    = S_WAIT;
-        default: next_state  = 2'b0;
     endcase
 end
 ```
@@ -309,20 +310,16 @@ always @(posedge clk) begin
 end
 ```
 
-下面根据状态处理输入输出即可。这里输出使用寄存器保存，采取同步更新策略
+下面根据状态处理输入输出即可。输出根据状态判断连到哪个寄存器即可
 
 ```verilog
 // 输出逻辑
-always @(posedge clk) begin
-    if (curr_state == S_LOAD_0) begin
-        f <= 0;
-    end
-    else if (curr_state == S_LOAD_1) begin
-        f <= a;
-    end
-    else begin
-        f <= b;
-    end
+always @(*) begin
+    case (curr_state)
+        S_LOAD_0: f = 0;
+        S_LOAD_1: f = a;
+        default:  f = b;
+    endcase
 end
 
 // 载入逻辑
@@ -375,13 +372,13 @@ std::cout << "test finished\n";
 
 从 $t=0$ 开始观察波形：
 
-![image-20220318131353123](report/image-20220318131353123.png)
+![image-20220320165200845](report/image-20220320165200845.png)
 
 随着 `en` 每次触发， `f` 输出依次变为 1, 2, 3, 5, 8, 13... 符合条件
 
 观察复位信号：
 
-![image-20220318132203525](report/image-20220318132203525.png)
+![image-20220320165238733](report/image-20220320165238733.png)
 
 成功起到复位作用，开始计算 2, 2, 4, 6, 10, ...
 
@@ -393,11 +390,11 @@ module top(input CLK,
            input BTNC,
            input [15:0] SW,
            output [15:0] LED);
-    
+
     // 去毛刺取边沿
     wire en_edge;
     btn_edge get_edge(.clk(CLK), .button(BTNC), .button_edge(en_edge));
-    
+
     // 连接 fls 模块
     fls fls1(.clk(CLK), .rstn(CPU_RESETN), .en(en_edge), .d(SW), .f(LED));
 endmodule
@@ -409,11 +406,11 @@ RTL 电路图：
 
 使用资源报告：
 
-![image-20220318134021793](report/image-20220318134021793.png)
+![image-20220320171155470](report/image-20220320171155470.png)
 
 性能报告：
 
-![image-20220318134049769](report/image-20220318134049769.png)
+![image-20220320173251401](report/image-20220320173251401.png)
 
 下载过程已经线下检查，不再附图
 
