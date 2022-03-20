@@ -1,7 +1,4 @@
-`include "alu.v"
-`include "btn_edge.v"
-
-module top(input CLK,
+module _top(input CLK,
            input CPU_RESETN,
            input BTNC,
            input [15:0] SW,

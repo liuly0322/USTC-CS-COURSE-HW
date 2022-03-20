@@ -216,17 +216,17 @@ endmodule
 
 ```verilog
 module btn_edge(input clk,
-                input button,
-                output button_edge);
-    reg [3:0] cnt;
+                    input button,
+                    output button_edge);
 
-    always@(posedge clk)
-    begin
+    reg [15:0] cnt;
+
+    always@(posedge clk) begin
         if (button == 1'b0) begin
-            cnt <= 4'h0;
+            cnt <= 0;
         end
         else begin
-            if (cnt < 4'h8) begin
+            if (cnt < 16'h8000) begin
                 cnt <= cnt + 1'b1;
             end
         end
@@ -234,7 +234,7 @@ module btn_edge(input clk,
 
     reg button_1, button_2;
     always @(posedge clk) begin
-        button_1 <= cnt[3];
+        button_1 <= cnt[15];
         button_2 <= button_1;
     end
 
@@ -276,17 +276,16 @@ for i in range(n):
 画出下列状态转换图：
 
 ```mermaid
-graph LR
-LOAD_0--en-->LOAD_1--en-->WAIT--en-->ADD--->WAIT
+graph TD
+LOAD_0--en-->LOAD_1--en-->WAIT--en-->WAIT
 ```
 
 进行编码：
 
 ```verilog
 parameter S_LOAD_0 = 2'b00;		// 初始状态，等待载入第一个数
-parameter S_LOAD_1 = 2'b01;		// 初始状态，等待载入第二个数
-parameter S_WAIT = 2'b10;       // 等待新的使能信号
-parameter S_ADD  = 2'b11;       // 执行加法
+parameter S_LOAD_1 = 2'b01;     // 等待载入第二个数
+parameter S_WAIT   = 2'b10;     // 等待使能
 ```
 
 两段式状态机的组合逻辑部分就容易写出：
@@ -296,8 +295,8 @@ always @(*) begin
     case (curr_state)
         S_LOAD_0: next_state = en? S_LOAD_1 : S_LOAD_0;
         S_LOAD_1: next_state = en? S_WAIT : S_LOAD_1;
-        S_WAIT: next_state   = en? S_ADD : S_WAIT;
-        S_ADD: next_state    = S_WAIT;
+        S_WAIT:   next_state = S_WAIT;
+        default:  next_state = S_LOAD_0;
     endcase
 end
 ```
@@ -316,22 +315,29 @@ end
 // 输出逻辑
 always @(*) begin
     case (curr_state)
-        S_LOAD_0: f = 0;
-        S_LOAD_1: f = a;
-        default:  f = b;
+        S_LOAD_1 :
+            f = a;
+        S_WAIT:
+            f = b;
+        default:
+            f = 0;
     endcase
 end
 
 // 载入逻辑
 always @(posedge clk) begin
-    case (curr_state)
-        S_LOAD_0: a <= d;
-        S_LOAD_1: b <= d;
-        S_ADD: begin
-            a <= b;
-            b <= a + b;
-        end
-    endcase
+    if (en) begin
+        case (curr_state)
+            S_LOAD_0:
+                a <= d;
+            S_LOAD_1:
+                b <= d;
+            S_WAIT: begin
+                a <= b;
+                b <= a + b;
+            end
+        endcase
+    end
 end
 ```
 
@@ -342,11 +348,14 @@ end
 ```cpp
 // 初始化，默认有效
 top->rstn = 1;
+main_time = 3;
+top->eval();
+tfp->dump(main_time);
 
 while (!Verilated::gotFinish() && main_time < sim_time / 2 + 1) {
-    top->en = main_time % 11 < 2 ? 1 : 0;  // 每一定时间产生使能信号
+    top->en = main_time % 12 < 2 ? 1 : 0;  // 每一定时间产生使能信号
     top->clk = main_time % 2;              // 模拟时钟
-    top->d = main_time < 5 ? 1 : 2;        // 依次载入 1 和 2
+    top->d = main_time < 20 ? 1 : 2;        // 依次载入 1 和 2
     top->eval();                           // 仿真时间步进
     tfp->dump(main_time);                  // 波形文件写入步进
     main_time++;
@@ -361,7 +370,7 @@ top->rstn = 1;
 
 while (!Verilated::gotFinish() && main_time < sim_time) {
     top->clk = main_time % 2;              // 模拟时钟
-    top->en = main_time % 11 < 2 ? 1 : 0;  // 每一定时间产生使能信号
+    top->en = main_time % 12 < 2 ? 1 : 0;  // 每一定时间产生使能信号
     top->eval();                           // 仿真时间步进
     tfp->dump(main_time);                  // 波形文件写入步进
     main_time++;
@@ -372,13 +381,13 @@ std::cout << "test finished\n";
 
 从 $t=0$ 开始观察波形：
 
-![image-20220320165200845](report/image-20220320165200845.png)
+![image-20220320224128915](report/image-20220320224128915.png)
 
 随着 `en` 每次触发， `f` 输出依次变为 1, 2, 3, 5, 8, 13... 符合条件
 
 观察复位信号：
 
-![image-20220320165238733](report/image-20220320165238733.png)
+![image-20220320224344089](report/image-20220320224344089.png)
 
 成功起到复位作用，开始计算 2, 2, 4, 6, 10, ...
 

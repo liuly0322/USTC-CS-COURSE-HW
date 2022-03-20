@@ -1,6 +1,3 @@
-`include "fls.v"
-`include "btn_edge.v"
-
 module top(input CLK,
            input CPU_RESETN,
            input BTNC,
