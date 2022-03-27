@@ -1,0 +1,53 @@
+module alu_32(input CLK,
+           input CPU_RESETN,
+           input BTNC,
+           input BTNU,
+           input BTNR,
+           input BTND,
+           input BTNL,
+           input [15:0] SW,
+           output [15:0] LED);
+    
+    // 去毛刺取边沿
+    wire en_edge[4:0];
+    btn_edge get_edge0(.clk(CLK), .button(BTNC), .button_edge(en_edge[4]));
+    btn_edge get_edge1(.clk(CLK), .button(BTNU), .button_edge(en_edge[3]));
+    btn_edge get_edge2(.clk(CLK), .button(BTNR), .button_edge(en_edge[2]));
+    btn_edge get_edge3(.clk(CLK), .button(BTND), .button_edge(en_edge[1]));
+    btn_edge get_edge4(.clk(CLK), .button(BTNL), .button_edge(en_edge[0]));
+    
+    // 连接 alu
+    reg [31:0] a;
+    reg [31:0] b;
+    reg [2:0] s;
+    wire [2:0] f;
+    wire [31:0] y;
+    alu(.a(a), .b(b), .s(s), .y(y), .f(f));
+
+    // 每个时钟周期检查是否有按钮按下，决定输入
+    always @(posedge CLK) begin
+        if (BTNC)
+            a[31:16] <= SW;
+        else if (BTNU)
+            a[15:0] <= SW;
+        else if (BTNR)
+            b[31:16] <= SW;
+        else if (BTND)
+            b[15:0] <= SW;
+        else if (BTNL)
+            s[2:0] <= SW[2:0];
+    end
+
+    // 根据 SW 决定输出哪个值
+    reg [15:0] out_val;
+    assign LED = out_val;
+
+    always @(*) begin
+        if (SW[15])
+            out_val = y[31:16];
+        else if (SW[14])
+            out_val = y[15:0];
+        else
+            out_val = {13'b0, f};
+    end
+endmodule

@@ -46,7 +46,10 @@ module fls (input clk,
     end
 
     // 载入逻辑
-    /* verilator lint_off CASEINCOMPLETE */
+    // 需要一个 wire 暂存 ALU 组合逻辑输出的结果
+    // c = a + b
+    wire [15:0] c;
+    alu #(.WIDTH(16)) alu1(.a(a), .b(b), .s(3'b001), .y(c));
     always @(posedge clk) begin
         if (en) begin
             case (curr_state)
@@ -56,7 +59,7 @@ module fls (input clk,
                     b <= d;
                 S_WAIT: begin
                     a <= b;
-                    b <= a + b;
+                    b <= c;
                 end
             endcase
         end
