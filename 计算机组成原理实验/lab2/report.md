@@ -176,7 +176,7 @@ initial begin
     end
 end
 
-// 地址使能，这里我们需要观察储存器情况，所以直接置换 1
+// 地址使能，这里我们需要观察储存器情况，所以直接置 1
 initial begin
     ena = 1;
 end
@@ -480,7 +480,11 @@ assign we = cur_state == S_IO? we_IO : we_sort;
 
 #### 仿真模拟
 
-由于实际测试已经线下完成，此部分仅就 sort_module 这一排序的核心模块进行仿真测试
+实际排序测试已经线下完成，这里仅示意性质的贴图：
+
+![image-20220330214558148](report/image-20220330214558148.png)
+
+接下来就 sort_module 这一排序的核心模块进行仿真测试
 
 为此需要编写一个辅助的 sort_sim.v ，仅仅把排序模块和寄存器连接：
 
@@ -566,9 +570,78 @@ int get_vd(vluint64_t time) {
 
 事实上还可以充分利用 RAM 可以双端口读的特性，对相邻几个数已经有序的情形做进一步的优化，但那样会大大增加状态机的复杂度，故本文没有实现
 
+### 附加实验
+
+主要是对模块的仿真测试
+
+因为我们前文编写模块没有用 parameter，这里附件有一个修改后的 extra_sort_module.v
+
+接下来分别使用两种 ip 核进行仿真测试即可：
+
+主要是例化，接起来即可
+
+分布式：
+
+```verilog
+extra_dis your_instance_name (
+  .a(a),        // input wire [11 : 0] a
+  .d(d),        // input wire [15 : 0] d
+  .dpra(dpra),  // input wire [11 : 0] dpra
+  .clk(clk),    // input wire clk
+  .we(we),      // input wire we
+  .spo(spo),    // output wire [15 : 0] spo
+  .dpo(dpo)    // output wire [15 : 0] dpo
+);
+```
+
+块式：
+
+```verilog
+blk_mem_gen_0 your_instance_name (
+  .clka(clk),    // input wire clka
+  .ena(1),      // input wire ena
+  .wea(we),      // input wire [0 : 0] wea
+  .addra(a),  // input wire [11 : 0] addra
+  .dina(d),    // input wire [15 : 0] dina
+  .douta(spo),  // output wire [15 : 0] douta
+  .clkb(clk),    // input wire clkb
+  .enb(1),      // input wire enb
+  .web(0),      // input wire [0 : 0] web
+  .addrb(dpra),  // input wire [11 : 0] addrb
+  .dinb(0),    // input wire [15 : 0] dinb
+  .doutb(dpo)  // output wire [15 : 0] doutb
+);
+```
+
+这里我们使用的初始 RAM 内存值是 `fff ff f`
+
+应该需要三轮完全交换和一轮不交换之后排序成功
+
+总周期 $4096\times 2 \times 3 + 4096 = 28672$
+
+因为我们冒泡排序的代码完全是同步读取，不用担心时序问题，二者仿真的结果都是一致的，这里只贴一个：
+
+![image-20220330211116486](report/image-20220330211116486.png)
+
+下面确认排序结果正确：
+
+![image-20220330211245360](report/image-20220330211245360.png)
+
+（正常产生 end 信号），这里是因为 n 减少了所以最后不需要比较到 fff 也知道排序结果正确
+
+下面查看两种储存器的资源占用情况：
+
+块式，直接占用 BRAM：
+
+![image-20220330214147501](report/image-20220330214147501.png)
+
+分布式：
+
+![image-20220330214407319](report/image-20220330214407319.png)
+
 ## 总结与思考
 
 - 本次实验增强了我的数据通路设计和代码编写及调试能力
 - 本次实验难度较大，与上一个实验之间的跨度不太合理
 - 本次实验文档说明不够清晰，希望可以改进
-- 本次实验任务量设置较大
+- 本次实验任务量设置较大，改造成 4096 位基本是重复操作，没有拓展的价值
