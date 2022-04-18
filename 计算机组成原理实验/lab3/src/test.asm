@@ -16,8 +16,8 @@ NEXT:
 auipc	t4, 16
 auipc   t6, 0
 addi	t6, t6, 24
-ble	t1, t0, NEXT2
-ble	t0, t1, NEXT2
+blt	t1, t0, NEXT2
+blt	t0, t1, NEXT2
 NEXT2:
 jal	t5 NEXT3
 NEXT3:
