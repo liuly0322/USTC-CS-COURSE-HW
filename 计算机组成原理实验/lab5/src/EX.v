@@ -35,10 +35,9 @@ module EX(
     wire [2:  0] alu_f;
     alu alu32 (.a(alu_in1), .b(alu_in2), .s(ctrl_alu_op_ID), .y(alu_out), .f(alu_f));
 
-    assign pc_branch_EX = ctrl_branch_ID[2];
+    assign pc_branch_EX = (ctrl_branch_ID[2] & (((ctrl_branch_ID[1] == 1)? alu_f[1] : alu_f[0]) ^ ctrl_branch_ID[0]));
     assign pc_jump_EX   = ctrl_jump_ID;
-    wire branch_success = (ctrl_branch_ID[2] & (((ctrl_branch_ID[1] == 1)? alu_f[1] : alu_f[0]) ^ ctrl_branch_ID[0]));
-    assign pc_nxt_EX    = (branch_success | pc_jump_EX) ? ((ctrl_pc_add_src_ID? rd1_ID: pc_ID) + imm_ID) : pc_4_ID;
+    assign pc_nxt_EX    = (ctrl_pc_add_src_ID? rd1_ID: pc_ID) + imm_ID;
 
     always @(posedge clk) begin
         alu_out_EX         <= alu_out;
