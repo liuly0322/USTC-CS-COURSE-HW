@@ -1,0 +1,8 @@
+build/
+bin/
+*.o
+*.class
+*.tokens
+*.interp
+*.java
+.vscode

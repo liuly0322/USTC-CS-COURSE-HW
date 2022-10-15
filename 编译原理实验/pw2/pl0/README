@@ -1,0 +1,61 @@
+PL/0 Project's Source Tree
+==========================
+
+1. Introduction
+
+PL/0 is similar to but much simpler than the general-purpose 
+programming language Pascal, intended as an educational programming 
+language. It serves as an example of how to construct a compiler. 
+It was originally introduced in the book, 
+            Algorithms + Data Structures = Programs, 
+by Niklaus Wirth in 1975.  
+
+This README contains basic information about building, and running
+PL/0 compiler or your extended compiler.
+If you're running on a Linux system, then just make sure you have
+the standard GCC installed.
+
+2. Source Tree
+This PL/0 project distribution includes the following files and 
+directories:
+-----------------------------------------------------------------
+README		this file
+Makefile	a makefile to build PL/0 compiler or its extension
+make.simple	a simple makefile to build PL/0 compiler
+include		directory storing header files
+src		directory storing source files
+doc		directory storing documents
+sample		directory storing sample test files and their results
+test		directory storing your test files
+bin		directory storing execution/objective files
+-----------------------------------------------------------------
+
+3. Building PL/0 compiler
+(Build PL/0 compiler)
+   $ make
+or 
+   $ make -f make.simple
+
+(Clean PL/0 compiler)
+   $ make clean
+or 
+   $ make -f make.simple clean
+
+4. Running PL/0 compiler
+   $ bin/pl0
+   please input source program file name: test/tests.pl0
+or   
+   $ cd bin
+   $ ./pl0
+   please input source program file name: test/tests.pl0
+or
+   $ bin/pl0 >test/t.res
+   then input "test/tests.pl0"
+
+========
+Yu Zhang ( yuzhang@ustc.edu.cn )
+School of Computer Science and Technology
+University of Science and Technology of China
+Hefei, Anhui, P.R.China
+
+Feb.12, 2012

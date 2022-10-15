@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.5)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+project(labLexer)
+
+add_executable(labLexer-1 src/labLexer-1.cpp)
+
+include(CTest)
+
+add_executable(labLexer-1-test test/labLexer-1-test.cpp)
+
+add_test(NAME labLexer-1-test COMMAND labLexer-1-test)
+
+enable_testing()

@@ -1,0 +1,8 @@
+# This Makefile requires GNU make.
+SHELL = /bin/sh
+
+default:: pl0
+	
+pl0: 
+	@mkdir -p bin
+	gcc -Iinclude -o bin/pl0 -m32 src/pl0.c
