@@ -1,0 +1,10 @@
+// Correct !
+int f(float x) {
+    return x;
+}
+float g(int y) {
+    return y;
+}
+int main() {
+    return f(g(f(g(1))));
+}

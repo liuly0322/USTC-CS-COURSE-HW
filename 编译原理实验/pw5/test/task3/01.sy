@@ -1,0 +1,4 @@
+// Unknown function
+int main() {
+    return f(0);
+}

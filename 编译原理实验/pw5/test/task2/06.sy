@@ -1,0 +1,5 @@
+// ExprStmt modulo
+int main() {
+    1 % 0.2;
+    return 0;
+}

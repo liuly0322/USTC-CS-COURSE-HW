@@ -1,0 +1,7 @@
+// Variable modulo
+float a = 0.1;
+int main() {
+    int b;
+    b = 1 % a;
+    return 0;
+}

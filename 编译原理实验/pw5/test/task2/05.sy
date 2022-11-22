@@ -1,0 +1,8 @@
+// Function modulo
+float f() {
+    return 0.1;
+}
+int main() {
+    int a = 1 % f();
+    return 0;
+}

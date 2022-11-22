@@ -1,0 +1,6 @@
+float f(int x) {
+    return x + 0.1;
+}
+int main(){
+    return f(f(f(-1)));
+}

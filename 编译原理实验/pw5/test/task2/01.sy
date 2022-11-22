@@ -1,0 +1,2 @@
+// Global modulo
+int a = 1, b = 3 % (2.0 / 1);

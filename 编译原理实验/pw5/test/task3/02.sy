@@ -1,0 +1,7 @@
+// Duplicated function
+int f(){
+    return 0;
+}
+void f(){
+    return 1;
+}

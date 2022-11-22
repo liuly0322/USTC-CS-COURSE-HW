@@ -1,0 +1,9 @@
+int f(int x){
+    return 0;
+}
+float g() {
+    return 0.1;
+}
+int main() {
+    f(f(1) - g());
+}

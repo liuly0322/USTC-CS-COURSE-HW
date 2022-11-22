@@ -1,0 +1,8 @@
+// Correct !
+int f(int x, float y, int z){
+    return x + y - z;
+}
+int main() {
+    f(0, 1.1, 2);
+    return 0;
+}
