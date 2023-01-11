@@ -1,0 +1,10 @@
+int getint(void);
+float getfloat(void);
+int getch(void);
+int getarray(int a[]);
+int getfarray(float a[]);
+void putint(int a);
+void putfloat(float a);
+void putch(int a);
+void putarray(int n, int a[]);
+void putfarray(int n, float a[]);

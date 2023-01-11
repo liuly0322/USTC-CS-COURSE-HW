@@ -1,0 +1,7 @@
+const int a[5]={0,1,2,3,4};
+const int b = 3;
+float c = a[b + 1];
+
+int main(){
+    return a[4] + c;
+}

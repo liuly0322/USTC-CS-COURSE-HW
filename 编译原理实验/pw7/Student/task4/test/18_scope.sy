@@ -1,0 +1,17 @@
+const int a = 5;
+int b;
+
+int my_sum(int x, float y){
+    b = a + x - y;
+    return b;
+}
+
+int main(){
+    int a = 7;
+    {
+        const float a = 3.3;
+        my_sum(a, a);
+    }
+    my_sum(a, b);
+    return b;
+}

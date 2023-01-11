@@ -1,0 +1,39 @@
+int a[10000];
+
+int read() { return getarray(a); }
+
+void swap(int i, int j) {
+    const int t = a[i];
+    a[i] = a[j];
+    a[j] = t;
+}
+
+int partition(int lo, int hi) {
+    int pivot = a[(lo + hi) / 2];
+    lo--, hi++;
+    while (1) {
+        do
+            lo++;
+        while (a[lo] < pivot);
+        do
+            hi--;
+        while (a[hi] > pivot);
+        if (lo >= hi)
+            return hi;
+        swap(lo, hi);
+    }
+}
+
+void quick_sort(int lo, int hi) {
+    if (lo >= hi || lo < 0)
+        return;
+    int pivot = partition(lo, hi);
+    quick_sort(lo, pivot); // pivot is not the actual pivot position
+    quick_sort(pivot + 1, hi);
+}
+
+int main() {
+    int n = read();
+    quick_sort(0, n - 1);
+    putarray(n, a);
+}
