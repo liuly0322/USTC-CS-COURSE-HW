@@ -1,7 +1,5 @@
-作业答案通常在：[作业答案](http://users.ece.utexas.edu/~patt/)
+# ICS
 
-一个 [机器码 / 汇编在线测评工具](http://home.ustc.edu.cn/~liuly0322/lc3web/)
+作业，考试可以参考：[Patt 主页](http://users.ece.utexas.edu/~patt/) 的 EE306 课程。
 
-实验题目见 [ics2021](https://git.lug.ustc.edu.cn/Chivier/ics2021)
-
-实验答案见 [我的仓库](https://git.lug.ustc.edu.cn/liuly0322/pb20000180_ics)
+2022 秋季学期课程资料：[课程主页](https://ics.liuly.moe)。
