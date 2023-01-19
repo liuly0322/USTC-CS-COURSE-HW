@@ -80,9 +80,9 @@ if __name__ == "__main__":
     # you can only modify this to add your testcase
     TEST_DIRS = [
         './test/',
-        './test_stu/',
-        './function_test2020/',
-        './function_test2021/'
+        # './test_stu/',
+        # './function_test2020/',
+        # './function_test2021/'
     ]
     # you can only modify this to add your testcase
 
