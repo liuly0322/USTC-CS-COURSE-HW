@@ -14,7 +14,7 @@
   - 在 LLVM IR 上进行自选优化
   - 将 LLVM IR 生成为 ARM 汇编并尽可能优化生成逻辑
 
-其中 pw8 暂未上传（目前在另一个 private repo 里）。
+pw8 仓库：<https://github.com/liuly0322/sysyf_compiler_codegen_opt>。
 
 总体来说，代码编译的流程可以划分为：
 
