@@ -1,4 +1,4 @@
-//¼ÆËãMµ½NµÄ»ØÎÄÊı£¨°üº¬±ß½ç£©
+//è®¡ç®— M åˆ° N çš„å›æ–‡æ•°ï¼ˆåŒ…å«è¾¹ç•Œï¼‰
 #include <stdio.h>
 int main(){
 	int isCorrect(int x);
@@ -20,7 +20,7 @@ int isCorrect(int x) {
 		a[i]=x%10;
 		x=x/10;
 	}
-	//iÊÇÎ»Êı£¬¶ÔÓ¦a[0]µ½a[i-1] 
+	//i æ˜¯ä½æ•°ï¼Œå¯¹åº” a[0] åˆ° a[i-1] 
 	for (t=0;t<=i/2;t++) {
 		if (a[t]!=a[i-1-t]) {
 			return 0;

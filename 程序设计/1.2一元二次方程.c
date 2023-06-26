@@ -6,10 +6,10 @@ int main(){
 	if(a==0){
 		if(b==0){
 			if(c==0){
-				printf("x可取全体实数");
+				printf("x 鍙彇鍏ㄤ綋瀹炴暟");
 			}
 			else{
-				printf("x无解");
+				printf("x 鏃犺В");
 			}
 		}
 		else{
@@ -18,7 +18,7 @@ int main(){
 	}
 	else{
 		if(b*b-4*a*c<0){
-			printf("x无实数解");
+			printf("x 鏃犲疄鏁拌В");
 			return 0;
 		}
 		if(a>0)

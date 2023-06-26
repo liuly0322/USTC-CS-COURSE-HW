@@ -9,7 +9,7 @@ int main() {
 		if (x == -1) {
 			break;
 		}
-		//ÒÔx+2,y+2ÎªÖÐÐÄ
+		//ä»¥ x+2,y+2 ä¸ºä¸­å¿ƒ
 		for (int i = x + 2 - r; i <= x + 2 + r; i++) {
 			for (int j = y + 2 - r; j <= y + 2 + r; j++) {
 				cover[i][j] += 1;

@@ -5,7 +5,7 @@ void print(int* a, int m, int n) {
 	if (m <= 0 || n <= 0) {
 		return;
 	}
-	//´òÓ¡
+	//æ‰“å°
 	if (m == 1) {
 		for (int i = 1; i <= n; i++) {
 			printf("%d ", *a);
@@ -37,7 +37,7 @@ void print(int* a, int m, int n) {
 		a -= 101;
 		printf("%d ", *a);
 	}
-	//µÝ¹é
+	//é€’å½’
 	print(b + 102, m - 2, n - 2);
 }
 int main() {

@@ -30,11 +30,11 @@ struct student_info* create(int length) {
 int main() {
 	int n, m;
 	scanf("%d%d", &n, &m);
-	//¼ÓÏÂÀ´·Ö±ð´´½¨Á½¸öÁ´±í
+	//åŠ ä¸‹æ¥åˆ†åˆ«åˆ›å»ºä¸¤ä¸ªé“¾è¡¨
 	struct student_info* a, * b, * p, * q, * temp;
 	a = create(n);
 	b = create(m);
-	//´ÓÁ´±íaÖÐÉ¾³ýÁ´±íb
+	//ä»Žé“¾è¡¨ a ä¸­åˆ é™¤é“¾è¡¨ b
 	p = a;
 	int del_flag = 0;
 	while (p != NULL && p->next != NULL) {
@@ -54,7 +54,7 @@ int main() {
 			p = p->next;
 		}
 	}
-	//Êä³öÁ´±ía
+	//è¾“å‡ºé“¾è¡¨ a
 	p = a->next;
 	if (p == NULL) {
 		printf("NULL");

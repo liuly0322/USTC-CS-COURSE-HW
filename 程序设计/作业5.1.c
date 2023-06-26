@@ -36,7 +36,7 @@ int main() {
 	scanf("%d%d", &n, &age);
 	struct student_info* a, * p, * temp;
 	a = create(n);
-	//È¥³ý´øÓÐÖ¸¶¨ÄêÁäµÄ
+	//åŽ»é™¤å¸¦æœ‰æŒ‡å®šå¹´é¾„çš„
 	p = a;
 	while (p != NULL && p->next != NULL) {
 		if ((p->next)->age == age) {
@@ -48,7 +48,7 @@ int main() {
 			p = p->next;
 		}
 	}
-	//Êä³öÁ´±ía
+	//è¾“å‡ºé“¾è¡¨ a
 	p = a->next;
 	if (p == NULL) {
 		printf("NULL");

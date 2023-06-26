@@ -6,7 +6,7 @@ char* insert(char* string, char c) {
 			break;
 		}
 	}
-	//cӦ�÷���iλ
+	//c 应该放在 i 位
 	for (int j = 50; j >= i; j--) {
 		string[j + 1] = string[j];
 	}

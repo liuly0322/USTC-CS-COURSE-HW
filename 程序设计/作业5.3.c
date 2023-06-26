@@ -6,7 +6,7 @@ struct node {
 	int num;
 };
 
-struct node* create(int length) {								//´´½¨³¤¶ÈÎªnµÄÁ´±í
+struct node* create(int length) {								//åˆ›å»ºé•¿åº¦ä¸º n çš„é“¾è¡¨
 	struct node* head, * p;
 	head = (struct node*)malloc(sizeof(struct node));
 	p = head;
@@ -23,7 +23,7 @@ struct node* create(int length) {								//´´½¨³¤¶ÈÎªnµÄÁ´±í
 	return head;
 }
 
-void del(struct node* a, int num) {								//É¾³ý´øÓÐÖ¸¶¨ÖµµÄÁ´±í
+void del(struct node* a, int num) {								//åˆ é™¤å¸¦æœ‰æŒ‡å®šå€¼çš„é“¾è¡¨
 	struct node* temp;
 	while (a != NULL && a->next != NULL) {
 		if ((a->next)->num == num) {
@@ -37,7 +37,7 @@ void del(struct node* a, int num) {								//É¾³ý´øÓÐÖ¸¶¨ÖµµÄÁ´±í
 	}
 }
 
-void print(struct node* a) {									//Êä³öÁ´±í
+void print(struct node* a) {									//è¾“å‡ºé“¾è¡¨
 	a = a->next;
 	if (a == NULL) {
 		printf("NULL");

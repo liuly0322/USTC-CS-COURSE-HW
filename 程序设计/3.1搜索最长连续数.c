@@ -1,4 +1,4 @@
-//改进思考：边计算边比较 
+//鏀硅繘鎬濊�冿細杈硅绠楄竟姣旇緝 
 #include <stdio.h>
 int main(){
 	long long x,t;
@@ -13,7 +13,7 @@ int main(){
 	for(i=1;t>=10;i++){
 		t=t/10;
 	}
-	//i是位数,t是最高位数字 
+	//i 鏄綅鏁帮紝t 鏄渶楂樹綅鏁板瓧 
 	c[i]=t;
 	for(j=1;j<=i-1;j++){
 		c[j]=x%10;

@@ -1,4 +1,4 @@
-//计算阶乘后的零的个数
+//璁＄畻闃朵箻鍚庣殑闆剁殑涓暟
 #include <stdio.h>
 int main(){
 	int n,sum=0;

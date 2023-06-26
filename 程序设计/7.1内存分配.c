@@ -20,7 +20,7 @@ int main() {
 		//if (nowStart < 1) nowStart = 1;
 		//if (nowEnd > sizeofMemory) nowEnd = sizeofMemory;
 		if (op == 'a') {
-			//Èç¹ûÖ¸ÁîÎŞĞ§Ôòcontinue
+			//å¦‚æœæŒ‡ä»¤æ— æ•ˆåˆ™ continue
 			if (protectEnd >=nowStart && nowEnd >= protectStart) {
 				continue;
 			}
@@ -33,13 +33,13 @@ int main() {
 			}
 			if (flag == 1) continue;
 		}
-		//½ÓÏÂÀ´ÒÑ¾­È·¶¨ÓĞÖØ¸´£¬¿¼ÂÇÈ¡²¢¼¯¼´¿É
+		//æ¥ä¸‹æ¥å·²ç»ç¡®å®šæœ‰é‡å¤ï¼Œè€ƒè™‘å–å¹¶é›†å³å¯
 		for (int j = 1; j <= nowAllocatePosi; j++) {
 			if (allocateEnd[j] >= nowStart - 1 && nowEnd >= allocateStart[j] - 1) {
-				//ÏÂÃæ½øĞĞºÏ²¢£¡
+				//ä¸‹é¢è¿›è¡Œåˆå¹¶ï¼
 				nowStart = nowStart < allocateStart[j] ? nowStart : allocateStart[j];
 				nowEnd = nowEnd > allocateEnd[j] ? nowEnd : allocateEnd[j];
-				//Í¬Ê±¸ÃÎ»ÖÃfreeÁË£¬¿¼ÂÇ°Ñ×îºóÒ»Î»Å²¹ıÀ´¼ì²â£¨Èç¹ûÕâÒ»Î»²»ÊÇ×îºóÒ»Î»£©
+				//åŒæ—¶è¯¥ä½ç½® free äº†ï¼Œè€ƒè™‘æŠŠæœ€åä¸€ä½æŒªè¿‡æ¥æ£€æµ‹ï¼ˆå¦‚æœè¿™ä¸€ä½ä¸æ˜¯æœ€åä¸€ä½ï¼‰
 				if (j != nowAllocatePosi) {
 					allocateStart[j] = allocateStart[nowAllocatePosi];
 					allocateEnd[j] = allocateEnd[nowAllocatePosi];

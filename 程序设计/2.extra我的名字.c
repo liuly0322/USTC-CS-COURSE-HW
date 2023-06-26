@@ -1,4 +1,4 @@
-//´òÓ¡ĞÕÃû
+//æ‰“å°å§“å
 #include <stdio.h>
 int main(){
 	printf("   @      @      @            @\n");

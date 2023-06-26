@@ -11,7 +11,7 @@ int main() {
 		scanf("%d", &a[i]);
 	}
 	qsort(a + 1, size, sizeof(int), sort);
-	//ÒÑ¾­°´µİÔöË³ĞòÅÅºÃ
+	//å·²ç»æŒ‰é€’å¢é¡ºåºæ’å¥½
 	int numofSmallest = 1;
 	for (int i = 2; i <= size; i++) {
 		if (a[i] == a[1]) {
@@ -23,7 +23,7 @@ int main() {
 	}
 	for (int i = 2; i <= numofSmallest; i++) {
 		if (numofSmallest % i == 0 && size % i == 0) {
-			//ÓĞ±ØÒªÅĞ¶Ïi×÷ÎªxÄÜ·ñ³ÉÁ¢
+			//æœ‰å¿…è¦åˆ¤æ–­ i ä½œä¸º x èƒ½å¦æˆç«‹
 			int flagX = 0;
 			for (int start = 1; start < size; start += i) {
 				for (int j = 1; j <= i - 1; j++) {

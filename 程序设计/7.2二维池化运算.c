@@ -8,9 +8,9 @@ int main() {
 			scanf("%d", &num[i][j]);
 		}
 	}
-	//¿´Ä©Î²£ºwin_size-1µ½stride+win_size-1µ½2*stride+win_size-1
-	//µ½Ä©Î² ³¬¹ı 2*padding+n-1ÎªÖ¹ k*stride+win_size>2*padding+n
-	//ËùÒÔ×îºóÒ»¸ökÇ¡ºÃÊÇ(n+2*padding-win_size)/stride
+	//çœ‹æœ«å°¾ï¼šwin_size-1 åˆ° stride+win_size-1 åˆ° 2*stride+win_size-1
+	//åˆ°æœ«å°¾ è¶…è¿‡ 2*padding+n-1 ä¸ºæ­¢ k*stride+win_size>2*padding+n
+	//æ‰€ä»¥æœ€åä¸€ä¸ª k æ°å¥½æ˜¯ (n+2*padding-win_size)/stride
 	int k = (n + 2 * padding - win_size) / stride;
 	for (int i = 0; i <= k; i++) {
 		for (int j = 0; j <= k; j++) {

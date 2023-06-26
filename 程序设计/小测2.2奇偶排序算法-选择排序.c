@@ -14,7 +14,7 @@ int main() {
 			count2 += 1;
 		}
 	}
-	//╫собю╢╥ж╠ПеепР
+	//Ф▌╔Д╦▀Ф²╔Е┬├Е┬╚Ф▌▓Е╨▐
 	int maxInfo, max;
 	for (int i = 0; i < count1 - 1; i++) {
 		maxInfo = i;
