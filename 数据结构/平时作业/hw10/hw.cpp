@@ -1,8 +1,8 @@
 // 数据结构第十次作业
-// 7.22 7.27 非递归DFS遍历图 7.7最小生成树 7.34
+// 7.22 7.27 非递归 DFS 遍历图 7.7 最小生成树 7.34
 
 // 7.22
-// 试基于图的dfs策略写一算法，判别按邻接表存储的有向图中是否存在两个顶点之间的路径
+// 试基于图的 dfs 策略写一算法，判别按邻接表存储的有向图中是否存在两个顶点之间的路径
 bool is_path(Graph& g, int i, int j, bool reset = true) {
     static bool is_visit[MAX_VERTEX_NUM];
     if (reset) {
@@ -65,7 +65,7 @@ bool isVisited(std::vector<int>* Visited, int t) {
     return false;
 }
 void Graph_DFS_Traverse(Graph* G, int S) {
-    // S是起始顶点序号
+    // S 是起始顶点序号
     std::vector<int> Visited;
     std::stack<int> stk;
     stk.push(S);

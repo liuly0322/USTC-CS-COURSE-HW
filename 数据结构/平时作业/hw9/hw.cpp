@@ -1,6 +1,6 @@
 // 6.73:
 // 若用大写字母标识树的结点，则可用带标号的广义表形式表示一棵树，语法图如题图所示。
-// 试编写一个递归算法，由这种广义表表示的字符序列构造树的孩子-兄弟链表（提示：
+// 试编写一个递归算法，由这种广义表表示的字符序列构造树的孩子 - 兄弟链表（提示：
 // 按照森林和树相互递归的定义写两个互相递归调用的算法，语法图中一对圆括号内的部分
 // 可看成森林的语法图）
 
@@ -36,7 +36,7 @@ Tree InitTree(char* s, int length) {
     return head;
 }
 
-// 7.16: 试在邻接表存储结构上实现图的基本操作: InsertVex(G, v), InsertArc(G, v,
+// 7.16: 试在邻接表存储结构上实现图的基本操作：InsertVex(G, v), InsertArc(G, v,
 // w), DeleteVex(G, v) 和 DeleteArc(G, v, w)
 
 Status InsertVex(Graph& G, VexNode v) {

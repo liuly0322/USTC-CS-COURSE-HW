@@ -1,5 +1,5 @@
 #include<iostream>
-#include<memory>	//auto_ptr的头文件
+#include<memory>	//auto_ptr 的头文件
 #include<cassert>
 using namespace std;
 class Test
@@ -36,14 +36,14 @@ void func(auto_ptr<Test> ptest){
   
 int main()
 {
-    auto_ptr<Test> ptest(new Test("123"));	//调用构造函数输出Test creat
+    auto_ptr<Test> ptest(new Test("123"));	//调用构造函数输出 Test creat
     ptest->setStr("hello ");				//修改成员变量的值
-    ptest->print();							//输出hello
-    ptest.get()->print();					//输出hello
+    ptest->print();							//输出 hello
+    ptest.get()->print();					//输出 hello
     ptest->getStr() += "world !";
-    (*ptest).print();						//输出hello world
-    ptest.reset(new Test("123"));//成员函数reset()重新绑定指向的对象，而原来的对象则会被释放，所以这里会调用一次构造函数，还有调用一次析构函数释放掉之前的对象
-    ptest->print();							//输出123
+    (*ptest).print();						//输出 hello world
+    ptest.reset(new Test("123"));//成员函数 reset() 重新绑定指向的对象，而原来的对象则会被释放，所以这里会调用一次构造函数，还有调用一次析构函数释放掉之前的对象
+    ptest->print();							//输出 123
     func(ptest);
     ptest->print();
     assert(ptest.get()  && "it is NULL now");

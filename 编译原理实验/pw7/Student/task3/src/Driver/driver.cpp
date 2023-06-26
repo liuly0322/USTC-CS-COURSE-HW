@@ -25,7 +25,7 @@ using namespace clang::ento;
 
 namespace {
 
-// 删除M中的函数中的可能存在的optnone属性
+// 删除 M 中的函数中的可能存在的 optnone 属性
 void set_func_attr(llvm::Module *M){
   for(llvm::Module::iterator sF = M->begin(), eF = M->end(); sF != eF; ++sF) {
     sF->removeFnAttr(llvm::Attribute::OptimizeNone);
@@ -37,13 +37,13 @@ void set_func_attr(llvm::Module *M){
 namespace mDriver {
 
 void PrintHelp() {
-    llvm::outs() << "中国科大 编译原理H LLVM-Driver-Demo\n";
-    llvm::outs() << "使用方法1: ./mClang <源文件> [-o=<输出IR文件路径>] [-show-AST|-v|-h]\n";
-    llvm::outs() << "使用方法2: ./mClang -IR [-o=<输出IR文件路径>] [-v|-h]\n";
-    llvm::outs() << "-IR                    选择执行手工构建的IR Module\n";
-    llvm::outs() << "-show-AST              打印AST\n";
-    llvm::outs() << "-v                     显示解析的详细信息,并在每个Pass被调用后打印LLVM IR\n";
-    llvm::outs() << "-o=<输出IR文件路径>     指定LLVM IRs输出文件路径,若无则输出到标准输出\n"; 
+    llvm::outs() << "中国科大 编译原理 H LLVM-Driver-Demo\n";
+    llvm::outs() << "使用方法 1: ./mClang <源文件> [-o=<输出 IR 文件路径>] [-show-AST|-v|-h]\n";
+    llvm::outs() << "使用方法 2: ./mClang -IR [-o=<输出 IR 文件路径>] [-v|-h]\n";
+    llvm::outs() << "-IR                    选择执行手工构建的 IR Module\n";
+    llvm::outs() << "-show-AST              打印 AST\n";
+    llvm::outs() << "-v                     显示解析的详细信息，并在每个 Pass 被调用后打印 LLVM IR\n";
+    llvm::outs() << "-o=<输出 IR 文件路径>     指定 LLVM IRs 输出文件路径，若无则输出到标准输出\n"; 
     llvm::outs() << "-h --help --h          显示帮助菜单\n";
 }
 
@@ -87,13 +87,13 @@ bool Driver::ParseArgs(SVec &Args) {
 }
 
 bool Driver::BuildCI(DiagnosticsEngine &Diags) {
-    // 调用Clang Driver根据参数创建编译任务实例
+    // 调用 Clang Driver 根据参数创建编译任务实例
     // Ref:https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/Driver.cpp#L982
     if(!is_IR){
         _C.reset(_TheDriver.BuildCompilation(_Args));
         assert(_C && "Compilation build failed!");
         auto &Jobs = _C->getJobs();
-        // 前面创建的编译任务的数目只能为1，i.e. 输入的源代码文件数为1
+        // 前面创建的编译任务的数目只能为 1，i.e. 输入的源代码文件数为 1
         // Command: An executable path/name and argument vector to execute.
         if (Jobs.size() != 1 || !isa<driver::Command>(*Jobs.begin())) {
             SmallString<256> Msg;
@@ -132,7 +132,7 @@ llvm::Module* Driver::FrontendCodeGen(llvm::Module *module){
             return nullptr;
     }
 
-      // LLVM 初始化本地目标程序以及本地LLVM IR的printer函数
+      // LLVM 初始化本地目标程序以及本地 LLVM IR 的 printer 函数
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();
     if(module){
@@ -150,7 +150,7 @@ llvm::Module* Driver::FrontendCodeGen(llvm::Module *module){
         std::error_code err;
         raw_fd_ostream outfile(StringRef(_OutFile), err);
         _M->print(outfile, nullptr);
-        llvm::outs() << "生成的IR module已写入" << _OutFile << "\n";
+        llvm::outs() << "生成的 IR module 已写入" << _OutFile << "\n";
     }
     return _M.get();
 }
@@ -184,7 +184,7 @@ void Driver::addPass(FunctionPass *_p){
         std::error_code _err;
         raw_fd_ostream* outfile = new raw_fd_ostream(StringRef(PassName), _err);
         _FPM->add(_p->createPrinterPass(*outfile, ""));
-        llvm::outs() << "优化后的IR已写入" << PassName << "\n";
+        llvm::outs() << "优化后的 IR 已写入" << PassName << "\n";
     }
 }
 
@@ -197,7 +197,7 @@ void Driver::addPass(ModulePass *_p){
         std::error_code _err;
         raw_fd_ostream* outfile = new raw_fd_ostream(StringRef(PassName), _err);
         _PM->add(_p->createPrinterPass(*outfile, ""));
-        llvm::outs() << "优化后的IR已写入" << PassName << "\n";
+        llvm::outs() << "优化后的 IR 已写入" << PassName << "\n";
     }
 }
 

@@ -7,7 +7,7 @@
 #include "Vregister_file.h"           // 译码器模块类
 using namespace std;
 
-Vregister_file* top;                  // 顶层dut对象指针
+Vregister_file* top;                  // 顶层 dut 对象指针
 VerilatedVcdC* tfp;             // 波形生成对象指针
 
 vluint64_t main_time = 0;           // 仿真时间戳
@@ -37,7 +37,7 @@ int get_wa(vluint64_t time) {
 }
 
 int get_wd(vluint64_t time) {
-    // 与 wa 同步， wa 变动时生成随机数即可
+    // 与 wa 同步，wa 变动时生成随机数即可
     static int tmp = 0;
     if (time % 10 == 5)
         tmp = rand();
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     top = new Vregister_file;
     tfp = new VerilatedVcdC;
 
-    // tfp初始化工作
+    // tfp 初始化工作
     top->trace(tfp, 99);
     tfp->open("register_file.vcd");
 

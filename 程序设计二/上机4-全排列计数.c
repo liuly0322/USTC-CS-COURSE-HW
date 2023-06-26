@@ -1,27 +1,27 @@
 /*
-* ¸ø³ö¼¯ºÏ [1,2,3,¡­,n]£¬ÆäËùÓÐÔªËØ¹²ÓÐ n! ÖÖÅÅÁÐ¡£
-* °´´óÐ¡Ë³ÐòÁÐ³öËùÓÐÅÅÁÐÇé¿ö£¬²¢Ò»Ò»±ê¼Ç£¬µ± n = 3 Ê±, ËùÓÐÅÅÁÐÈçÏÂ£º
-* ¡°123¡±¡°132¡±¡°213¡±¡°231¡±¡°312¡±¡°321¡±
-* ¸ø¶¨ n ºÍ k£¬·µ»ØµÚ k ¸öÅÅÁÐ¡£
-*/
+ * ç»™å‡ºé›†åˆ [1,2,3,â€¦,n]ï¼Œå…¶æ‰€æœ‰å…ƒç´ å…±æœ‰ n! ç§æŽ’åˆ—ã€‚
+ * æŒ‰å¤§å°é¡ºåºåˆ—å‡ºæ‰€æœ‰æŽ’åˆ—æƒ…å†µï¼Œå¹¶ä¸€ä¸€æ ‡è®°ï¼Œå½“ n = 3 æ—¶ï¼Œæ‰€æœ‰æŽ’åˆ—å¦‚ä¸‹ï¼š
+ * â€œ123â€â€œ132â€â€œ213â€â€œ231â€â€œ312â€â€œ321â€
+ * ç»™å®š n å’Œ kï¼Œè¿”å›žç¬¬ k ä¸ªæŽ’åˆ—ã€‚
+ */
 
 #include <stdio.h>
 int main() {
-	int num[10] = { 1,1,2,6,24,120,720,5040,40320,362880 };
-	unsigned int mark = 0;
-	int n, k;
-	scanf("%d%d", &n, &k);
-	for (int i = 0; i < n; i++) {
-		int times = (k - 1) / num[n - i - 1] + 1;
-		k = (k - 1) % num[n - i - 1] + 1;
-		int posi;
-		for (posi = 0; times; posi++) {
-			if ((1 << posi) & mark) {
-				continue;
-			}
-			times--;
-		}
-		putchar(posi + '0');
-		mark = mark | (1 << (posi - 1));
-	}
+    int num[10] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880};
+    unsigned int mark = 0;
+    int n, k;
+    scanf("%d%d", &n, &k);
+    for (int i = 0; i < n; i++) {
+        int times = (k - 1) / num[n - i - 1] + 1;
+        k = (k - 1) % num[n - i - 1] + 1;
+        int posi;
+        for (posi = 0; times; posi++) {
+            if ((1 << posi) & mark) {
+                continue;
+            }
+            times--;
+        }
+        putchar(posi + '0');
+        mark = mark | (1 << (posi - 1));
+    }
 }

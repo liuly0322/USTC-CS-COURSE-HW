@@ -6,7 +6,7 @@
 #include "Vfls.h"  // 译码器模块类
 using namespace std;
 
-Vfls* top;           // 顶层dut对象指针
+Vfls* top;           // 顶层 dut 对象指针
 VerilatedVcdC* tfp;  // 波形生成对象指针
 
 vluint64_t main_time = 0;          // 仿真时间戳
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     top = new Vfls;
     tfp = new VerilatedVcdC;
 
-    // tfp初始化工作
+    // tfp 初始化工作
     top->trace(tfp, 99);
     tfp->open("fls.vcd");
 

@@ -50,7 +50,7 @@
 
 ## 实验环境
 
-- VLAB：vlab.ustc.eud.cn
+- VLAB: vlab.ustc.eud.cn
 - Vivado
 - Nexys4DDR
 

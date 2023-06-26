@@ -1,6 +1,6 @@
 // 6.38 利用栈的基本操作写出后序遍历的非递归算法
 
-// 利用标志栈 S_flag。 0 表示在访问左子树，1 表示在访问右子树
+// 利用标志栈 S_flag。0 表示在访问左子树，1 表示在访问右子树
 Status PostOrderTraverse(BiTree T, Status (*Visit)(TElemType e)) {
     InitStack(S_tree);
     BiTree p = T;

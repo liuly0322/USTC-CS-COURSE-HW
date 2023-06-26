@@ -10,7 +10,7 @@ function getInput(index) {
     let array = s.replace(/-/g, '+-').replace(/\^\+/g, '^').replace(/^\+/, '').split('+'); // 加号分割每一项
     let ans = ''; const length = array.length * 2;
     array.forEach((item) => {
-        //对每一个 item, 希望格式为: 'num1 num2 '
+        //对每一个 item, 希望格式为：'num1 num2 '
         if (item.indexOf('x') == -1) {           // 常数项
             ans += `${item} 0 `;
         } else {
@@ -129,14 +129,14 @@ function diff() {
 function divide() {
     const res1 = getInput(1), res2 = getInput(2);
     if (res2.leng === 0 || res2.s === '0 0 ') {
-        alert('除数不能为空或 0 ，请检查输入');
+        alert('除数不能为空或 0，请检查输入');
         return;
     }
     fetch(`http://8.142.17.250/testfold/poly.php?op=5&p1=${encodeURIComponent(res1.s)}&p2=${encodeURIComponent(res2.s)}&count1=${res1.leng}&count2=${res2.leng}`)
         .then(response => response.text())
         .then(data => {
             const ans = data.split('\n');
-            // ans[0]是商，ans[1]是余数
+            // ans[0] 是商，ans[1] 是余数
             const quotient = getOutput(ans[0]), remainder = getOutput(ans[1]);
             document.getElementById('res1').innerHTML = `商：${quotient}<pre>可复制此处：${quotient.slice(1,quotient.length-1)}</pre>余数：${remainder}<pre>可复制此处：${remainder.slice(1,remainder.length-1)}</pre>`;
             document.getElementById('res1').style.display = 'block';

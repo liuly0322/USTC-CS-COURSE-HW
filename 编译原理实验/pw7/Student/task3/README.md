@@ -1,6 +1,6 @@
-# LLVM驱动程序教程
+# LLVM 驱动程序教程
 
-本目录提供教你用Clang/LLVM应用编程接口构建编译器、程序分析器或优化器的示例代码。我们定义了可扩展的`Driver`类，它调用Clang/LLVM API实现对输入的源程序文件的解析，产生AST、LLVM IR等中间表示，并在这些中间表示上开展程序分析和变换。
+本目录提供教你用Clang/LLVM应用编程接口构建编译器、程序分析器或优化器的示例代码。我们定义了可扩展的`Driver`类，它调用 Clang/LLVM API 实现对输入的源程序文件的解析，产生 AST、LLVM IR 等中间表示，并在这些中间表示上开展程序分析和变换。
 
 ## 目录说明
 
@@ -27,25 +27,25 @@
 
 ## 驱动程序支持的功能
 
-如果输入c语言文件：
+如果输入 c 语言文件：
 
-1. 支持打印Clang生成的AST;
-2. 调用[Clang Driver](https://github.com/llvm/llvm-project/blob/release/11.x/clang/lib/Driver/Driver.cpp)产生LLVM IR；
+1. 支持打印 Clang 生成的 AST;
+2. 调用[Clang Driver](https://github.com/llvm/llvm-project/blob/release/11.x/clang/lib/Driver/Driver.cpp)产生 LLVM IR；
 3. 支持参数解析、定制`Pass`并自动打印`LLVM IR`；
 
-输入c语言文件或者调用返回`IR Module`:
+输入 c 语言文件或者调用返回`IR Module`:
 
-1. 调用LLVM IR层次的一些TransForm Passes，对IR进行优化；
+1. 调用 LLVM IR 层次的一些 TransForm Passes，对 IR 进行优化；
 2. 基于`DynamicLibrary`机制，支持运行时输入输出；
 3. 基于`MCJIT`模块，支持即时编译执行。
 
 ## 使用说明
 
-### 1. 编译Clang和LLVM
+### 1. 编译 Clang 和 LLVM
 
-我们已经为大家准备了实验环境；如果你打算在本机配置相同的实验环境的话，可以参考[llvm 11.0.0安装文档](./docs/LLVM-11.0.0-install.md)。
+我们已经为大家准备了实验环境；如果你打算在本机配置相同的实验环境的话，可以参考[llvm 11.0.0 安装文档](./docs/LLVM-11.0.0-install.md)。
 
-### 2. 使用Driver
+### 2. 使用 Driver
 
 在本软件包根目录下，执行下面的命令编译驱动程序：
 
@@ -56,7 +56,7 @@ cmake .. # for relaese
 make [-j<num>]
 ```
 
-生成的可执行文件为`build/mClang`，mClang的使用方法及参数可以通过执行下面命令获知。
+生成的可执行文件为`build/mClang`，mClang 的使用方法及参数可以通过执行下面命令获知。
 
 ```bash
 ./mClang -h

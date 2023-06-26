@@ -72,7 +72,7 @@ int main() {
 
 注意：**本实验无需考虑函数名与变量名相同的情况。**
 
-**作用域**可以参考维基百科中对C语言作用域的定义，如下：
+**作用域**可以参考维基百科中对 C 语言作用域的定义，如下：
 `An identifier can denote an object; a function; a tag or a member of a structure, union, or enumeration; a typedef name; a label name; a macro name; or a macro parameter. The same identifier can denote different entities at different points in the program. For each different entity that an identifier designates, the identifier is visible (i.e., can be used) only within a region of program text called its scope.`
 
 **提醒**：1）形式参数在函数体的顶层作用域内；2）参考教材 7.2.2 节作用域信息的保存。

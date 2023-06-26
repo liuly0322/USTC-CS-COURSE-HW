@@ -12,7 +12,7 @@ void QuickSort(float *arr, int low, int high)
         float k = arr[low];
         while (i < j)
         {
-            while(i < j && arr[j] >= k)     // 从右向左找第一个小于k的数
+            while(i < j && arr[j] >= k)     // 从右向左找第一个小于 k 的数
             {
                 j--;
             }
@@ -22,7 +22,7 @@ void QuickSort(float *arr, int low, int high)
                 arr[i++] = arr[j];
             }
  
-            while(i < j && arr[i] < k)      // 从左向右找第一个大于等于k的数
+            while(i < j && arr[i] < k)      // 从左向右找第一个大于等于 k 的数
             {
                 i++;
             }
@@ -36,8 +36,8 @@ void QuickSort(float *arr, int low, int high)
         arr[i] = k;
  
         // 递归调用
-        QuickSort(arr, low, i - 1);     // 排序k左边
-        QuickSort(arr, i + 1, high);    // 排序k右边
+        QuickSort(arr, low, i - 1);     // 排序 k 左边
+        QuickSort(arr, i + 1, high);    // 排序 k 右边
     }
 }
  

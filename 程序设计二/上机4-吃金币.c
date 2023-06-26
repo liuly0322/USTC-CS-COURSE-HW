@@ -1,81 +1,90 @@
 /*
-* Ò»¸öN x NµÄÍø¸ñ(grid) ´ú±íÁËÒ»¿é¿ÕµØ£¬Ã¿¸ö¸ñ×ÓÓÉÒÔÏÂÈıÖÖÊı×ÖµÄÒ»ÖÖÀ´±íÊ¾£º
-* 0 ±íÊ¾Õâ¸ö¸ñ×ÓÊÇ¿ÕµÄ£¬ËùÒÔÄã¿ÉÒÔ´©¹ıËü¡£
-* 1 ±íÊ¾Õâ¸ö¸ñ×ÓÀï·ÅÁËÒ»Ã¶½ğ±Ò£¬Äã¿ÉÒÔ¼ñÆğ½ğ±ÒÈ»ºó´©¹ıËü¡£
-* -1 ±íÊ¾Õâ¸ö¸ñ×ÓÀïÓĞ¾ŞÊ¯£¬µ²×ÅÄãµÄÂ·¡£
-* ÄãµÄÈÎÎñÊÇÔÚ×ñÊØÏÂÁĞ¹æÔòµÄÇé¿öÏÂ£¬¼ñµ½¾¡¿ÉÄÜ¶àµÄ½ğ±Ò£º
-* ´ÓÎ»ÖÃ (0, 0) ³ö·¢£¬×îºóµ½´ï (N-1, N-1) £¬Ö»ÄÜÏòÏÂ»òÏòÓÒ×ß£¬²¢ÇÒÖ»ÄÜ´©Ô½ÓĞĞ§µÄ¸ñ×Ó£¨¼´Ö»¿ÉÒÔ´©¹ıÖµÎª0»òÕß1µÄ¸ñ×Ó£©£»
-* µ±µ½´ï (N-1, N-1) ºó£¬ÄãÒª¼ÌĞø×ß£¬Ö±µ½·µ»Øµ½ (0, 0) £¬Ö»ÄÜÏòÉÏ»òÏò×ó×ß£¬²¢ÇÒÖ»ÄÜ´©Ô½ÓĞĞ§µÄ¸ñ×Ó£»
-* µ±Äã¾­¹ıÒ»¸ö¸ñ×ÓÇÒÕâ¸ö¸ñ×Ó°üº¬Ò»¸ö½ğ±ÒÊ±£¬Äã½«¼ñÆğ½ğ±Ò²¢ÇÒÕâ¸ö¸ñ×Ó»á±ä³É¿ÕµÄ£¨Öµ±äÎª0£©£»
-* Èç¹ûÔÚ (0, 0) ºÍ (N-1, N-1) Ö®¼ä²»´æÔÚÒ»Ìõ¿É¾­¹ıµÄÂ·¾¶£¬ÔòÈÏÎªÄãÎŞ·¨»ñµÃÈÎºÎ½ğ±Ò¡£
-*/
+ * ä¸€ä¸ª N x N çš„ç½‘æ ¼ (grid) ä»£è¡¨äº†ä¸€å—ç©ºåœ°ï¼Œæ¯ä¸ªæ ¼å­ç”±ä»¥ä¸‹ä¸‰ç§æ•°å­—çš„ä¸€ç§æ¥è¡¨ç¤ºï¼š
+ * 0 è¡¨ç¤ºè¿™ä¸ªæ ¼å­æ˜¯ç©ºçš„ï¼Œæ‰€ä»¥ä½ å¯ä»¥ç©¿è¿‡å®ƒã€‚
+ * 1 è¡¨ç¤ºè¿™ä¸ªæ ¼å­é‡Œæ”¾äº†ä¸€æšé‡‘å¸ï¼Œä½ å¯ä»¥æ¡èµ·é‡‘å¸ç„¶åç©¿è¿‡å®ƒã€‚
+ * -1 è¡¨ç¤ºè¿™ä¸ªæ ¼å­é‡Œæœ‰å·¨çŸ³ï¼ŒæŒ¡ç€ä½ çš„è·¯ã€‚
+ * ä½ çš„ä»»åŠ¡æ˜¯åœ¨éµå®ˆä¸‹åˆ—è§„åˆ™çš„æƒ…å†µä¸‹ï¼Œæ¡åˆ°å°½å¯èƒ½å¤šçš„é‡‘å¸ï¼š
+ * ä»ä½ç½® (0, 0) å‡ºå‘ï¼Œæœ€ååˆ°è¾¾ (N-1, N-1)
+ * ï¼Œåªèƒ½å‘ä¸‹æˆ–å‘å³èµ°ï¼Œå¹¶ä¸”åªèƒ½ç©¿è¶Šæœ‰æ•ˆçš„æ ¼å­ï¼ˆå³åªå¯ä»¥ç©¿è¿‡å€¼ä¸º 0 æˆ–è€… 1
+ * çš„æ ¼å­ï¼‰ï¼›å½“åˆ°è¾¾ (N-1, N-1) åï¼Œä½ è¦ç»§ç»­èµ°ï¼Œç›´åˆ°è¿”å›åˆ° (0, 0)
+ * ï¼Œåªèƒ½å‘ä¸Šæˆ–å‘å·¦èµ°ï¼Œå¹¶ä¸”åªèƒ½ç©¿è¶Šæœ‰æ•ˆçš„æ ¼å­ï¼›
+ * å½“ä½ ç»è¿‡ä¸€ä¸ªæ ¼å­ä¸”è¿™ä¸ªæ ¼å­åŒ…å«ä¸€ä¸ªé‡‘å¸æ—¶ï¼Œä½ å°†æ¡èµ·é‡‘å¸å¹¶ä¸”è¿™ä¸ªæ ¼å­ä¼šå˜æˆç©ºçš„ï¼ˆå€¼å˜ä¸º
+ * 0ï¼‰ï¼›å¦‚æœåœ¨ (0, 0) å’Œ (N-1, N-1)
+ * ä¹‹é—´ä¸å­˜åœ¨ä¸€æ¡å¯ç»è¿‡çš„è·¯å¾„ï¼Œåˆ™è®¤ä¸ºä½ æ— æ³•è·å¾—ä»»ä½•é‡‘å¸ã€‚
+ */
 
 #include <stdio.h>
-#define MIN(x,y) (x)<(y)?(x):(y)
-#define MAX(x,y) (x)>(y)?(x):(y)
+#define MIN(x, y) (x) < (y) ? (x) : (y)
+#define MAX(x, y) (x) > (y) ? (x) : (y)
 #define MAX_MAP 250
 
 int main() {
 
-	int n = 0;	//size of the maze
-	char c;	//for read
-	static int dp[2 * MAX_MAP - 1][MAX_MAP][MAX_MAP];	//(sum,row_1,row_2)
-	static char mark[MAX_MAP][MAX_MAP];	//if coin or blocked
+    int n = 0;                                        // size of the maze
+    char c;                                           // for read
+    static int dp[2 * MAX_MAP - 1][MAX_MAP][MAX_MAP]; //(sum,row_1,row_2)
+    static char mark[MAX_MAP][MAX_MAP];               // if coin or blocked
 
-	while ((c = getchar()) != '\n') {	//read
-		if (c != ' ') {
-			ungetc(c, stdin);
-			scanf("%hhd", &mark[0][n++]);
-		}
-	}
-	for (int i = 1; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			scanf("%hhd", &mark[i][j]);
-		}
-	}
+    while ((c = getchar()) != '\n') { // read
+        if (c != ' ') {
+            ungetc(c, stdin);
+            scanf("%hhd", &mark[0][n++]);
+        }
+    }
+    for (int i = 1; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            scanf("%hhd", &mark[i][j]);
+        }
+    }
 
-	for (int sum = 2 * n - 2; sum >= 0; sum--) {
-		int x_min = MAX(0, sum - n + 1), x_max = MIN(sum, n - 1);
-		for (int row_1 = x_min; row_1 <= x_max; row_1++) {
-			for (int row_2 = x_min; row_2 <= x_max; row_2++) {
-				if (mark[row_1][sum - row_1] < 0 || mark[row_2][sum - row_2] < 0) {	//if blocked
-					dp[sum][row_1][row_2] = -1;
-					continue;
-				}
-				if (row_1 > row_2) {	//as symmetry
-					dp[sum][row_1][row_2] = dp[sum][row_2][row_1];
-					continue;
-				}
+    for (int sum = 2 * n - 2; sum >= 0; sum--) {
+        int x_min = MAX(0, sum - n + 1), x_max = MIN(sum, n - 1);
+        for (int row_1 = x_min; row_1 <= x_max; row_1++) {
+            for (int row_2 = x_min; row_2 <= x_max; row_2++) {
+                if (mark[row_1][sum - row_1] < 0 ||
+                    mark[row_2][sum - row_2] < 0) { // if blocked
+                    dp[sum][row_1][row_2] = -1;
+                    continue;
+                }
+                if (row_1 > row_2) { // as symmetry
+                    dp[sum][row_1][row_2] = dp[sum][row_2][row_1];
+                    continue;
+                }
 
-				dp[sum][row_1][row_2] = -1;	//dp calculation
-				if (row_1 != n - 1 && row_2 != n - 1) {
-					dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2], dp[sum + 1][row_1 + 1][row_2 + 1]);
-				}
-				if (row_1 != n - 1 && sum - row_2 != n - 1) {
-					dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2], dp[sum + 1][row_1 + 1][row_2]);
-				}
-				if (sum - row_1 != n - 1 && sum - row_2 != n - 1) {
-					dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2], dp[sum + 1][row_1][row_2]);
-				}
-				if (sum - row_1 != n - 1 && row_2 != n - 1) {
-					dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2], dp[sum + 1][row_1][row_2 + 1]);
-				}
-				if (sum == 2 * n - 2) {
-					dp[sum][row_1][row_2] = 0;
-				}
+                dp[sum][row_1][row_2] = -1; // dp calculation
+                if (row_1 != n - 1 && row_2 != n - 1) {
+                    dp[sum][row_1][row_2] =
+                        MAX(dp[sum][row_1][row_2],
+                            dp[sum + 1][row_1 + 1][row_2 + 1]);
+                }
+                if (row_1 != n - 1 && sum - row_2 != n - 1) {
+                    dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2],
+                                                dp[sum + 1][row_1 + 1][row_2]);
+                }
+                if (sum - row_1 != n - 1 && sum - row_2 != n - 1) {
+                    dp[sum][row_1][row_2] =
+                        MAX(dp[sum][row_1][row_2], dp[sum + 1][row_1][row_2]);
+                }
+                if (sum - row_1 != n - 1 && row_2 != n - 1) {
+                    dp[sum][row_1][row_2] = MAX(dp[sum][row_1][row_2],
+                                                dp[sum + 1][row_1][row_2 + 1]);
+                }
+                if (sum == 2 * n - 2) {
+                    dp[sum][row_1][row_2] = 0;
+                }
 
-				if (dp[sum][row_1][row_2] == -1) {	//if coin
-					continue;
-				}
-				if (row_1 == row_2) {
-					dp[sum][row_1][row_2] += mark[row_1][sum - row_1];
-				}
-				else {
-					dp[sum][row_1][row_2] += mark[row_1][sum - row_1] + mark[row_2][sum - row_2];
-				}
-			}
-		}
-	}
+                if (dp[sum][row_1][row_2] == -1) { // if coin
+                    continue;
+                }
+                if (row_1 == row_2) {
+                    dp[sum][row_1][row_2] += mark[row_1][sum - row_1];
+                } else {
+                    dp[sum][row_1][row_2] +=
+                        mark[row_1][sum - row_1] + mark[row_2][sum - row_2];
+                }
+            }
+        }
+    }
 
-	printf("%d", MAX(dp[0][0][0], 0));
+    printf("%d", MAX(dp[0][0][0], 0));
 }

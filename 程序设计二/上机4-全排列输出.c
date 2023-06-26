@@ -1,31 +1,32 @@
 /*
-* ¸ø¶¨Ò»Ã»ÓĞÖØ¸´Êı×ÖµÄĞòÁĞ£¬·µ»ØÆäËùÓĞ¿ÉÄÜµÄÈ«ÅÅÁĞ¡£
-* Êä³öĞèÒª°´ÕÕÊäÈëµÄ´ÓÇ°µ½ºóµÄË³ĞòÅÅÁĞ¡£¾ßÌå²Î¿¼ÑùÀıÊı¾İ¡£
-* ÊäÈëÊÇÓÃ¿Õ¸ñ·Ö¸îµÄ¼¸¸öÊı×Ö£¬Êı×Ö¸öÊınÂú×ã1 <= n <= 9.
-* Êä³öÄãµÄÅÅÁĞ£¬Ã¿ĞĞÒ»¸ö£¬°´ÕÕ´ÓĞ¡µ½´óË³Ğò¡£
-*/
+ * ç»™å®šä¸€æ²¡æœ‰é‡å¤æ•°å­—çš„åºåˆ—ï¼Œè¿”å›å…¶æ‰€æœ‰å¯èƒ½çš„å…¨æ’åˆ—ã€‚
+ * è¾“å‡ºéœ€è¦æŒ‰ç…§è¾“å…¥çš„ä»å‰åˆ°åçš„é¡ºåºæ’åˆ—ã€‚å…·ä½“å‚è€ƒæ ·ä¾‹æ•°æ®ã€‚
+ * è¾“å…¥æ˜¯ç”¨ç©ºæ ¼åˆ†å‰²çš„å‡ ä¸ªæ•°å­—ï¼Œæ•°å­—ä¸ªæ•° n æ»¡è¶³ 1 <= n <= 9.
+ * è¾“å‡ºä½ çš„æ’åˆ—ï¼Œæ¯è¡Œä¸€ä¸ªï¼ŒæŒ‰ç…§ä»å°åˆ°å¤§é¡ºåºã€‚
+ */
 
 #include <stdio.h>
 
-void range(int* num, int depth, unsigned int now, int n, int* op) {
-	if (depth == n) {
-		for (int i = 0; i < n; i++) {
-			putchar('0' + op[i]);
-		}
-		putchar('\n');
-		return;
-	}
-	for (int i = 0; i < n; i++) {
-		if (now & (1 << i)) {
-			continue;
-		}
-		op[depth] = num[i];
-		range(num, depth + 1, now | (1 << i), n, op);
-	}
+void range(int *num, int depth, unsigned int now, int n, int *op) {
+    if (depth == n) {
+        for (int i = 0; i < n; i++) {
+            putchar('0' + op[i]);
+        }
+        putchar('\n');
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        if (now & (1 << i)) {
+            continue;
+        }
+        op[depth] = num[i];
+        range(num, depth + 1, now | (1 << i), n, op);
+    }
 }
 
 int main() {
-	int num[10], op[10] = { 0 }, n;
-	for (n = 0; scanf("%d", num + n) != EOF; n++);
-	range(num, 0, 0, n, op);
+    int num[10], op[10] = {0}, n;
+    for (n = 0; scanf("%d", num + n) != EOF; n++)
+        ;
+    range(num, 0, 0, n, op);
 }

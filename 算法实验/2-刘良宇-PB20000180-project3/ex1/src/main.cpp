@@ -120,9 +120,9 @@ int main(int argc, char **argv) {
     const int high_2 = rand() % (50 - low_2) + low_2;
     const int low_3 = rand() % 50;
     const int high_3 = rand() % (50 - low_3) + low_3;
-    std::cout << "搜索: " << low_1 << ' ' << high_1 << std::endl;
-    std::cout << "搜索: " << low_2 << ' ' << high_2 << std::endl;
-    std::cout << "搜索: " << low_3 << ' ' << high_3 << std::endl;
+    std::cout << "搜索：" << low_1 << ' ' << high_1 << std::endl;
+    std::cout << "搜索：" << low_2 << ' ' << high_2 << std::endl;
+    std::cout << "搜索：" << low_3 << ' ' << high_3 << std::endl;
     auto search_file = std::ofstream("./output/search.txt");
     auto res1 = interval_tree.intervalSearch(low_1, high_1);
     if (res1 == interval_tree.getNil()) {

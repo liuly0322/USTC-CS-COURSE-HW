@@ -1,16 +1,16 @@
-# 使用Flex和Bison构建SysYF语言前端
+# 使用 Flex 和 Bison 构建 SysYF 语言前端
 
-- [使用Flex和Bison构建SysYF语言前端](#使用flex和bison构建sysyf语言前端)
+- [使用 Flex 和 Bison 构建 SysYF 语言前端](#使用flex和bison构建sysyf语言前端)
   - [任务说明](#任务说明)
   - [目录结构](#目录结构)
-  - [SysYF语言定义](#sysyf语言定义)
+  - [SysYF 语言定义](#sysyf语言定义)
   - [评测说明](#评测说明)
 
-**注意：请务必读懂demo后再进行本关实验**
+**注意：请务必读懂 demo 后再进行本关实验**
 
 ## 任务说明
 
-在本关，你将使用Bison,Flex工具，在我们给定的框架下实现SysYF(一个C语言子集)的前端。在本关，你**只需要**更改`grammar/sysyfParser.yy`和`grammar/sysyfScanner.ll`。在你需要填写代码的位置有相应注释说明。你需要使用本实验框架中**提供**的AST的结构来构建AST。对应AST的文档见`doc/AST.md`。对应的AST的声明和定义见`include/SyntaxTree.h`，`src/SyntaxTree.cpp`。评测时会调用`SyntaxTreePrinter`和正确生成的AST进行比较。`SyntaxTreePrinter`源代码见`include/SyntaxTreePrinter.h`，`src/SyntaxTreePrinter.cpp`。
+在本关，你将使用 Bison,Flex 工具，在我们给定的框架下实现 SysYF(一个 C 语言子集) 的前端。在本关，你**只需要**更改`grammar/sysyfParser.yy`和`grammar/sysyfScanner.ll`。在你需要填写代码的位置有相应注释说明。你需要使用本实验框架中**提供**的 AST 的结构来构建 AST。对应 AST 的文档见`doc/AST.md`。对应的 AST 的声明和定义见`include/SyntaxTree.h`，`src/SyntaxTree.cpp`。评测时会调用`SyntaxTreePrinter`和正确生成的 AST 进行比较。`SyntaxTreePrinter`源代码见`include/SyntaxTreePrinter.h`，`src/SyntaxTreePrinter.cpp`。
 
 **注意**，请不要修改除`grammar`外其他目录下的文件。
 
@@ -42,10 +42,10 @@
     └── <num>_<name>.sy             # 测试样例文件
 ```
 
-## SysYF语言定义
+## SysYF 语言定义
 
-SysYF语言定义见`SysYF语言定义.pdf`。该文档包含了部分语义说明(如同名标识符的约定等)，是后续实验需要的。本次实验不需要考虑语义。本关实验的评测输入一定是符合SysYF语言规范的合法程序，不存在未定义行为，且所有的测试集都是公开的。
+SysYF 语言定义见`SysYF语言定义.pdf`。该文档包含了部分语义说明 (如同名标识符的约定等)，是后续实验需要的。本次实验不需要考虑语义。本关实验的评测输入一定是符合 SysYF 语言规范的合法程序，不存在未定义行为，且所有的测试集都是公开的。
 
 ## 评测说明
 
-评测时会使用若干SysYF语言程序作为输入，评测输入一定是符合SysYF语言规范的合法程序，不存在未定义行为（如数组非对齐初始化，Int、Float溢出等。测试文件在test目录下，其中以`.sy`结尾的为测试样例，`.out`结尾的为应有的输出。
+评测时会使用若干 SysYF 语言程序作为输入，评测输入一定是符合 SysYF 语言规范的合法程序，不存在未定义行为（如数组非对齐初始化，Int、Float 溢出等。测试文件在 test 目录下，其中以`.sy`结尾的为测试样例，`.out`结尾的为应有的输出。

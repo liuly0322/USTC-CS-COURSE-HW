@@ -85,18 +85,18 @@
 
 ## Ptr
 
-AST中使用的指针类型。实际上是`std::shared_ptr`
+AST 中使用的指针类型。实际上是`std::shared_ptr`
 
 ## PtrList
 
-存放[Ptr](#ptr)的list，实际上是`std::vector<Ptr>`
+存放[Ptr](#ptr)的 list，实际上是`std::vector<Ptr>`
 
 ## Position
 
-该节点代表的语法结构在源文件的位置信息，实际上是`yy::location`。由bison/flex自动生成。
+该节点代表的语法结构在源文件的位置信息，实际上是`yy::location`。由 bison/flex 自动生成。
 
 ## Type
-包含SysY语言支持的数据类型：`Type::INT`以及`Type::VOID`。
+包含 SysY 语言支持的数据类型：`Type::INT`以及`Type::VOID`。
 
 多出的`Type::STRING`类型用作系统调用的参数类型，`Type::BOOL`作为条件表达式类型。
 
@@ -159,7 +159,7 @@ AST中使用的指针类型。实际上是`std::shared_ptr`
 
 ## Assembly
 
-AST的根结点
+AST 的根结点
 
 [PtrList](#ptrlist)<[GlobalDef](#globaldef)> `Assembly::global_defs`存放所有[GlobalDef](#globaldef)指针。
 
@@ -182,19 +182,19 @@ eg
 int a = 3 + 1;//isExp=true
 int c[2][2] = {{1,2},{3,4}};//isExp=false
 ```
-所有`InitVal`结点最底层一定是[Expr](#expr)类型。也即`isExp`为true
+所有`InitVal`结点最底层一定是[Expr](#expr)类型。也即`isExp`为 true
 
 [PtrList](#ptrlist)<[InitVal](#initval)> `InitVal::elementList`
 
-当`isExp`为false时该域才有意义。是包含`{}`中其余`InitVal`结点指针的列表。
+当`isExp`为 false 时该域才有意义。是包含`{}`中其余`InitVal`结点指针的列表。
 
 [Ptr](#ptr)<[Expr](#expr)> `InitVal::expr`
 
-当`isExp`为true时该域才有意义。一个初值表达式的指针。
+当`isExp`为 true 时该域才有意义。一个初值表达式的指针。
 
 ## GlobalDef
 
-所有def结点的基类
+所有 def 结点的基类
 
 ## FuncDef
 
@@ -226,7 +226,7 @@ int c[2][2] = {{1,2},{3,4}};//isExp=false
 
 [Type](#type) `VarDef::btype` 
 
-变量类型(在sysY中只能是int)
+变量类型 (在 sysY 中只能是 int)
 
 `std::string VarDef::name`
 
@@ -246,11 +246,11 @@ int c[2][2] = {{1,2},{3,4}};//isExp=false
 
 ## Stmt
 
-所有statement的基类
+所有 statement 的基类
 
 ## AssignStmt
 
-表示如下类型的语句:
+表示如下类型的语句：
 ```c++
 target = value
 ```
@@ -267,19 +267,19 @@ target = value
 
 ## ReturnStmt
 
-代表return 语句
+代表 return 语句
 
 [Ptr](#ptr)<[Expr](#expr)> `ReturnStmt::ret`
 
-return 语句返回的表达式指针。空指针代表void return
+return 语句返回的表达式指针。空指针代表 void return
 
 ## BlockStmt
 
-代表使用`{}`括起来的stmt。
+代表使用`{}`括起来的 stmt。
 
 [PtrList](#ptrlist)<[Stmt](#stmt)> `BlockStmt::body`
 
-该block中所有stmt指针的列表
+该 block 中所有 stmt 指针的列表
 
 ## EmptyStmt
 
@@ -379,7 +379,7 @@ return 语句返回的表达式指针。空指针代表void return
 
 `std::string Literal::str`
 
-字符串语义值(未处理转义)
+字符串语义值 (未处理转义)
 
 ## FuncCallStmt
 
@@ -419,7 +419,7 @@ return 语句返回的表达式指针。空指针代表void return
 
 ## IfStmt
 
-表示如下结构:
+表示如下结构：
 ```c++
 if(cond_exp)
     if_stmt
@@ -432,15 +432,15 @@ else
 
 [Ptr](#ptr)<[Expr](#expr)> `IfStmt::cond_exp`
 
-cond_exp的指针
+cond_exp 的指针
 
 [Ptr](#ptr)<[Stmt](#stmt)> `IfStmt::if_statement`
 
-if_stmt的指针
+if_stmt 的指针
 
 [Ptr](#ptr)<[Stmt](#stmt)> `IfStmt::else_statement`
 
-else_stmt的指针(若无else，则为空)
+else_stmt 的指针 (若无 else，则为空)
 
 
 ## WhileStmt
@@ -453,21 +453,21 @@ while(cond_exp)
 
 [Ptr](#ptr)<[Expr](#expr)> `WhileStmt::cond_exp`
 
-cond_exp的指针
+cond_exp 的指针
 
 [Ptr](#ptr)<[Stmt](#stmt)> `WhileStmt::statement`
 
-stmt的指针
+stmt 的指针
 
 
 ## BreakStmt
 
-表示一个break语句
+表示一个 break 语句
 
 ## ContinueStmt
 
-表示一个continue语句
+表示一个 continue 语句
 
 ## Visitor
 
-访问者模式的基类，用于访问AST。需要重写其中的visit函数。
+访问者模式的基类，用于访问 AST。需要重写其中的 visit 函数。

@@ -8,7 +8,7 @@ GlobalVariable::GlobalVariable( std::string name, Module *m, Type* ty, bool is_c
     if (init) {
         this->set_operand(0, init);
     }
-}//global操作数为initval
+}//global 操作数为 initval
 
 GlobalVariable *GlobalVariable::create(std::string name, Module *m, Type* ty, bool is_const, 
                                     Constant* init = nullptr)

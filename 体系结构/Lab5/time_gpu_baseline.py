@@ -13,11 +13,11 @@ def run_program_and_get_time(n, block_size):
 n_values = [256, 512, 1024, 2048]
 block_sizes = [4, 8, 16, 32]
 
-# 生成Markdown表格的头部
+# 生成 Markdown 表格的头部
 table_header = "| N | 4 | 8 | 16 | 32 |\n"
 table_header += "| --- | --- | --- | --- | --- |\n"
 
-# 生成Markdown表格的内容
+# 生成 Markdown 表格的内容
 table_content = ""
 for n in n_values:
     row = f"| {n} "
@@ -27,7 +27,7 @@ for n in n_values:
     row += "|\n"
     table_content += row
 
-# 将表格写入Markdown文件
+# 将表格写入 Markdown 文件
 with open('result.md', 'w') as file:
     file.write(table_header)
     file.write(table_content)

@@ -88,7 +88,7 @@ void head_dfs(Graph& G, int v) {
 
 int path[MAX];  // 最长路径中，从某一点出发，下一个顶点应该是什么
 int start_posi;  // 起点
-int dp[MAX];  // 记录每一点开始的"最深深度"。也就是假设v没有out，则dp[v] = 1
+int dp[MAX];  // 记录每一点开始的"最深深度"。也就是假设 v 没有 out，则 dp[v] = 1
 
 // 返回长度。路径存储在 path 数组中
 int longest_path(Graph& G) {
@@ -141,7 +141,7 @@ int search(table& st, int key, int low, int high) {
 
 // 9.28 试编写利用折半查找确定记录所在块的分块查找算法
 
-// 假设 1 到 n 项存储数据， n == length
+// 假设 1 到 n 项存储数据，n == length
 // 假设 max_key[length + 1] = +\infin
 // 假设 max_key[0] = -\infin
 // 假设 start_loca[kength + 1] = 原表长 + 1

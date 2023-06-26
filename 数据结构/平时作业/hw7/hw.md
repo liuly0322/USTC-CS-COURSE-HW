@@ -4,7 +4,7 @@
 
 ## 6.38
 
-利用标志栈 S_flag。 0 表示在访问左子树，1 表示在访问右子树。
+利用标志栈 S_flag。0 表示在访问左子树，1 表示在访问右子树。
 
 ```cpp
 Status PostOrderTraverse(BiTree T, Status (*Visit)(TElemType e)) {

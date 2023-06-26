@@ -41,11 +41,11 @@ int main(int argc, const char **argv) {
   IntrusiveRefCntPtr<DiagnosticIDs> DiagID(new DiagnosticIDs());
   DiagnosticsEngine Diags(DiagID, &*DiagOpts, DiagClient);
 
-  // 得到当前进程运行所在的目标平台信息，用于JIT中把代码load进当前进程
+  // 得到当前进程运行所在的目标平台信息，用于 JIT 中把代码 load 进当前进程
   const std::string TripleStr = llvm::sys::getProcessTriple();
   llvm::Triple T(TripleStr);
 
-  // 调用Driver，实例化
+  // 调用 Driver，实例化
   llvm::ErrorOr<std::string> ClangPath = llvm::sys::findProgramByName("clang");
   if (!ClangPath) {
       llvm::errs() << "clang not found.\n";
@@ -75,7 +75,7 @@ int main(int argc, const char **argv) {
       runtime = new runtime_info(module);
   }
   else{
-      // 直接调用IR构造函数，获得 llvm::Module
+      // 直接调用 IR 构造函数，获得 llvm::Module
       // module = gcd_generator(*context, runtime);
       /**
        * @brief TODO

@@ -19,7 +19,7 @@ namespace mDriver {
 using cDriver = clang::driver::Driver;
 using SVec = SmallVector<const char *, 16>;
 
-// Driver接收单文件，解析并产生AST和LLVM IR的Module
+// Driver 接收单文件，解析并产生 AST 和 LLVM IR 的 Module
 class Driver {
 private:
     cDriver _TheDriver;
@@ -30,7 +30,7 @@ private:
     std::unique_ptr<driver::Compilation> _C;
     clang::CompilerInstance _Clang;
     std::unique_ptr<CodeGenAction> _Act;
-    // 保存Clang 代码生成的LLVM IR的Module
+    // 保存 Clang 代码生成的 LLVM IR 的 Module
     std::unique_ptr<llvm::Module> _M;
     size_t _PassID = 0;
     PassRegistry* _PassRegistry;
