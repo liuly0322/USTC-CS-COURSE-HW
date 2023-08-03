@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import List
+from math import sin, cos
 
 
 class char_tokenizer:
@@ -113,6 +114,20 @@ class Block(nn.Module):
         return out
 
 
+def get_positional_encoding(seq_len, n_embd):
+    # Create an empty tensor to store positional encodings
+    positional_encoding = torch.zeros(seq_len, n_embd)
+
+    # Compute the positional encodings using sinusoidal functions
+    for pos in range(seq_len):
+        for i in range(0, n_embd, 2):
+            # Use the formula for even dimensions
+            positional_encoding[pos, i] = sin(pos / (10000 ** (i / n_embd)))
+            # Use the formula for odd dimensions
+            positional_encoding[pos, i + 1] = cos(pos / (10000 ** ((i + 1) / n_embd)))
+
+    return positional_encoding.to(device)
+
 class Transformer(nn.Module):
     def __init__(self):
         super().__init__()
@@ -122,6 +137,7 @@ class Transformer(nn.Module):
         self.blocks = nn.ModuleList([Block(n_embd, n_heads) for _ in range(n_layers)])
         self.norm = nn.LayerNorm(n_embd)
         self.linear = nn.Linear(n_embd, n_vocab)
+        self.positional_encoding = get_positional_encoding(block_size, n_embd)
         # End of your code
 
     def forward(self, inputs, labels=None):
@@ -130,6 +146,11 @@ class Transformer(nn.Module):
         # inputs:(batch, context)
         # embedding:(batch, context, embedding)
         embedding = self.embedding(inputs)
+
+        # add positional encoding
+        positional_encoding = self.positional_encoding[: embedding.size(1), :]
+        embedding += positional_encoding.unsqueeze(0)
+
         # attens:(batch, context, embedding)
         out = self.norm(embedding)
         for block in self.blocks:
