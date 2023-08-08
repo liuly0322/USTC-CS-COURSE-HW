@@ -13,16 +13,16 @@ class char_tokenizer:
 
     def __init__(self, corpus: List[str]):
         self.corpus = corpus
-        # create a dictionary that maps each character to a unique integer
+        """create a dictionary that maps each character to a unique integer"""
         self.char_to_int = {char: i for i, char in enumerate(corpus)}
 
     def encode(self, string: str):
-        # convert a string into a list of integers and return
+        """convert a string into a list of integers and return"""
         return [self.char_to_int[char] for char in string]
 
-    def decode(self, codes: List[int]):
-        # convert a list of integers into a string and return
-        return "".join(self.corpus[code] for code in codes)
+    def decode(self, code: int):
+        """convert a integer into a string and return"""
+        return self.corpus[code]
 
 
 class Head(nn.Module):
@@ -30,19 +30,12 @@ class Head(nn.Module):
 
     def __init__(self, head_size):
         super().__init__()
-        # create three linear layers, Key, Query, and Value, each of which maps from n_embd to head_size
-        # and assign them to self.Key, self.Query, and self.Value, respectively
         self.Key = nn.Linear(head_size, head_size)
         self.Query = nn.Linear(head_size, head_size)
         self.Value = nn.Linear(head_size, head_size)
-        # End of your code
         self.register_buffer("tril", torch.tril(torch.ones(block_size, block_size)))
 
     def forward(self, inputs):
-        # TODO: implement the forward function of the head
-        #       the input is a tensor of shape (batch, time, n_embd)
-        #       the output should be a tensor of shape (batch, time, head_size)
-        #       you may use the tril buffer defined above to mask out the upper triangular part of the affinity matrix
         keys = self.Key(inputs)
         queries = self.Query(inputs)
         values = self.Value(inputs)
@@ -57,130 +50,93 @@ class Head(nn.Module):
             ),
             dim=-1,
         )
-        out = torch.matmul(attn_probs, values)
-
-        # End of your code
-        return out
+        return torch.matmul(attn_probs, values)
 
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, n_heads, head_size):
         super().__init__()
-        # TODO: implement heads and projection
         self.heads = nn.ModuleList([Head(head_size) for _ in range(n_heads)])
         self.projection = nn.Linear(n_heads * head_size, head_size)
-        # End of your code
 
     def forward(self, inputs):
-        # TODO: implement the forward function of the multi-head attention
         heads_out = [head(inputs) for head in self.heads]
         out = torch.cat(heads_out, dim=-1)
         return self.projection(out)
 
 
-class FeedForward(nn.Module):
-    def __init__(self, n_embd):
-        super().__init__()
-        # TODO: implement the feed-forward network
-        self.net = nn.Sequential(
-            nn.Linear(n_embd, 4 * n_embd),
-            nn.ReLU(),
-            nn.Linear(4 * n_embd, n_embd),
-        )
-        # End of your code
-
-    def forward(self, inputs):
-        return self.net(inputs)
+FeedForward = lambda n_embd: nn.Sequential(
+    nn.Linear(n_embd, 4 * n_embd),
+    nn.ReLU(),
+    nn.Linear(4 * n_embd, n_embd),
+)
 
 
 class Block(nn.Module):
     def __init__(self, n_embd, n_heads):
         super().__init__()
-        # TODO: implement the block of transformer using the MultiHeadAttention and
-        # FeedForward modules, along with the layer normalization layers
         self.attention = MultiHeadAttention(n_heads, n_embd)
         self.norm1 = nn.LayerNorm(n_embd)
         self.norm2 = nn.LayerNorm(n_embd)
         self.ff = FeedForward(n_embd)
-        # End of your code
 
     def forward(self, inputs):
-        # TODO: implement the forward function of the block, you may refer to the docs of this experiment
         attention_out = self.attention(inputs)
         attention_out = self.norm1(attention_out + inputs)
         ff_out = self.ff(attention_out)
         out = self.norm2(ff_out + attention_out)
-        # End of your code
         return out
 
-
-def get_positional_encoding(seq_len, n_embd):
-    # Create an empty tensor to store positional encodings
-    positional_encoding = torch.zeros(seq_len, n_embd)
-
-    # Compute the positional encodings using sinusoidal functions
-    for pos in range(seq_len):
-        for i in range(0, n_embd, 2):
-            # Use the formula for even dimensions
-            positional_encoding[pos, i] = sin(pos / (10000 ** (i / n_embd)))
-            # Use the formula for odd dimensions
-            positional_encoding[pos, i + 1] = cos(pos / (10000 ** ((i + 1) / n_embd)))
-
-    return positional_encoding.to(device)
 
 class Transformer(nn.Module):
     def __init__(self):
         super().__init__()
-        # TODO: create the embedding table, the stack of blocks, the layer normalization layer,
-        # and the linear layers.
         self.embedding = nn.Embedding(n_vocab, n_embd)
         self.blocks = nn.ModuleList([Block(n_embd, n_heads) for _ in range(n_layers)])
         self.norm = nn.LayerNorm(n_embd)
         self.linear = nn.Linear(n_embd, n_vocab)
-        self.positional_encoding = get_positional_encoding(block_size, n_embd)
-        # End of your code
+        self.positional_encoding = self.get_positional_encoding(block_size, n_embd)
+
+    @staticmethod
+    def get_positional_encoding(seq_len, n_embd):
+        """return the positional encoding tensor of shape (seq_len, n_embd)"""
+        positional_encoding = torch.zeros(seq_len, n_embd)
+        for pos in range(seq_len):
+            for i in range(0, n_embd, 2):
+                positional_encoding[pos, i] = sin(pos / (10000 ** (i / n_embd)))
+                positional_encoding[pos, i + 1] = cos(
+                    pos / (10000 ** ((i + 1) / n_embd))
+                )
+        return positional_encoding.to(device)
 
     def forward(self, inputs, labels=None):
-        # TODO: implement the forward function of the transformer
-
-        # inputs:(batch, context)
-        # embedding:(batch, context, embedding)
         embedding = self.embedding(inputs)
 
         # add positional encoding
         positional_encoding = self.positional_encoding[: embedding.size(1), :]
         embedding += positional_encoding.unsqueeze(0)
 
-        # attens:(batch, context, embedding)
         out = self.norm(embedding)
         for block in self.blocks:
             out = block(out)
-        # logits:(batch, context, attens)
         logits = self.linear(out)
-        # End of your code
 
-        # compute the loss
-
+        # for inference
         if labels is None:
-            loss = None
-        else:
-            batch, time, channel = logits.shape
-            logits = logits.view(batch * time, channel)
-            labels = labels.view(batch * time)
-            loss = F.cross_entropy(logits, labels)
+            return logits, None
+
+        batch, time, channel = logits.shape
+        logits = logits.view(batch * time, channel)
+        labels = labels.view(batch * time)
+        loss = F.cross_entropy(logits, labels)
         return logits, loss
 
     def generate(self, inputs, max_new_tokens):
-        # TODO: generate new tokens from the transformer, using the inputs as the context,
-        #  and return the generated tokens with length of max_new_tokens
         for _ in range(max_new_tokens):
             logits, _ = self.forward(inputs[:, -block_size:])
-            predicted_tokens = torch.multinomial(
-                F.softmax(logits[:, -1], dim=-1), num_samples=1
-            )
-            inputs = torch.cat((inputs, predicted_tokens), dim=1)
-        # End of your code
-        return inputs
+            token = torch.multinomial(F.softmax(logits[:, -1], dim=-1), num_samples=1)
+            inputs = torch.cat((inputs, token), dim=1)
+            yield token
 
 
 def get_batch(split):
@@ -188,8 +144,7 @@ def get_batch(split):
     ix = torch.randint(len(data) - block_size, (batch_size,))
     x = torch.stack([data[i : i + block_size] for i in ix])
     y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
-    x, y = x.to(device), y.to(device)
-    return x, y
+    return x.to(device), y.to(device)
 
 
 @torch.no_grad()
@@ -200,21 +155,23 @@ def estimate_loss(model):
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
             x, y = get_batch(split)
-            logits, loss = model(x, y)
+            _, loss = model(x, y)
             losses[k] = loss.item()
         out[split] = losses.mean()
     return out
 
 
 def generate(model, inputs):
+    print(inputs, end="", flush=True)
     context = torch.tensor(encode(inputs), device=device, dtype=torch.long).unsqueeze(0)
-    print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+    for token in model.generate(context, max_new_tokens=500):
+        print(decode(token), end="", flush=True)
 
 
 def train(model):
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
-    for iter in range(max_iters):
+    for iter in range(max_iters + 1):
         if iter % eval_interval == 0:
             losses = estimate_loss(model)
             print(
@@ -223,7 +180,7 @@ def train(model):
 
         inputs, labels = get_batch("train")
 
-        logits, loss = model(inputs, labels)
+        _, loss = model(inputs, labels)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
@@ -262,5 +219,5 @@ train(model)
 torch.save(model.state_dict(), "model.pt")
 generate(
     model,
-    "I have a dream that one day",
+    "The meaning of life is ",
 )
