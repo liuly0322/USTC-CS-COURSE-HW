@@ -1,6 +1,6 @@
 # SysYF runtime
 
-SysYF运行时库提供一系列I/O函数用于在SysYF程序中表达输入/输出功能需求。这些库函数不用在SysYF程序中声明即可在SysYF程序中的函数里调用。这些库函数支持对整数、浮点数、字符以及一串整数或浮点数的输入和输出。
+SysYF 运行时库提供一系列 I/O 函数用于在 SysYF 程序中表达输入/输出功能需求。这些库函数不用在 SysYF 程序中声明即可在 SysYF 程序中的函数里调用。这些库函数支持对整数、浮点数、字符以及一串整数或浮点数的输入和输出。
 
 - [SysYF runtime](#sysyf-runtime)
   - [getint](#getint)

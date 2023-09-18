@@ -259,7 +259,7 @@ NewLine             [\n]
 2. 规则部分
 在词法描述文件中，介于两个%%之间的是词法规则及动作部分。`demo/grammar/demoScanner.ll`中的词法规则及动作如下：
 
-**注：此时可以先忽略{}中的具体 C++代码。后续会有相关说明**
+**注：此时可以先忽略{}中的具体 C++ 代码。后续会有相关说明**
 
 ```flex
  /* keyword */
@@ -561,7 +561,7 @@ static symbol_type make_INTCONST (const int& v, const location_type& l)
                             return yy::demoParser::make_INTCONST(int(sum),loc);
                         }
 ```
-其中 yytext 表示当前 flex 词法分析器匹配到的串。在当前场景下表示匹配到的 10 进制数字串。`{}`中的 c++代码用于将 10 进制数字串转换为对应的数字，功能类似 atoi() 函数。
+其中 yytext 表示当前 flex 词法分析器匹配到的串。在当前场景下表示匹配到的 10 进制数字串。`{}`中的 c++ 代码用于将 10 进制数字串转换为对应的数字，功能类似 atoi() 函数。
 
 ### 问题 1-2
 阅读并理解 demo 代码以及 Bison-Flex 协作的方式，目前的实现中并不强制 demo 语言程序包含 main 函数，而这不符合文档描述的语言规范。若在前端分析过程中就强制要求 demo 语言程序必须包含且只能包含一个 main 函数（也就是说把这个约束用语法定义来体现），应该如何修改词法语法定义？

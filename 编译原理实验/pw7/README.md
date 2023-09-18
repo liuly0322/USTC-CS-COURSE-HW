@@ -10,7 +10,7 @@
 ## 0. 前言
 
 本次实验分为 3 关。**请务必使用 git 提交**。    
-实验目的旨在让大家熟悉生成中间代码所需要的相关知识：LLVM IR、SysYF IR（LLVM IR 的轻量级 C++接口）以及如何基于 Clang/LLVM 构建编译器的驱动程序 Driver。
+实验目的旨在让大家熟悉生成中间代码所需要的相关知识：LLVM IR、SysYF IR（LLVM IR 的轻量级 C++ 接口）以及如何基于 Clang/LLVM 构建编译器的驱动程序 Driver。
 在开始实验之前，请确保 LLVM 的版本为 11.0.0，且 PATH 环境变量配置正确。可以通过`lli --version`命令是否可以输出 11.0.0 的版本信息来验证。(虚拟平台上已经安装相应版本，可以通过前述命令进行检查)
 
 ### 安装 LLVM 11.0.0
@@ -31,7 +31,7 @@ export PATH=~/llvm11.0.0/bin:$PATH
 ### 本次实验的主要内容
 
 1. 第一部分：了解 LLVM IR。通过 clang 生成的.ll，了解 LLVM IR 与 C 程序代码的对应关系。相应文档见[phase1.md](./doc/phase1.md)
-2. 第二部分：了解 SysYF IR。通过本实验提供的 c++例子，了解 SysYF IR 的 C++编程接口及实现。相应文档见[phase2.md](./doc/phase2.md)
+2. 第二部分：了解 SysYF IR。通过本实验提供的 c++ 例子，了解 SysYF IR 的 C++ 编程接口及实现。相应文档见[phase2.md](./doc/phase2.md)
 3. 第三部分：了解编译器驱动程序 Driver。通过本实验提供的基于 Clang Driver 改造的可扩展 LLVM 驱动程序，了解 LLVM 的前后端处理流程，包括 JIT 即时编译执行。相应文档见[phase3.md](./doc/phase3.md)
 4. 实验报告：在[report.md](./report/report.md)中撰写报告。
 

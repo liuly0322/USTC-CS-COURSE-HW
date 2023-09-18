@@ -199,7 +199,7 @@ n_heads = 8
 n_layers = 6
 
 # read the dataset
-with open("../data/input.txt", "r", encoding="utf-8") as f:
+with open("input.txt", "r", encoding="utf-8") as f:
     text = f.read()
 chars = sorted(list(set(text)))
 
@@ -215,9 +215,11 @@ val_data = torch.tensor(encode(text[-len(text) // 10 :]), dtype=torch.long)
 
 # define the model
 model = Transformer().to(device)
-train(model)
-torch.save(model.state_dict(), "model.pt")
-generate(
-    model,
-    "The meaning of life is ",
-)
+
+if __name__ == "__main__":
+    train(model)
+    torch.save(model.state_dict(), "model.pt")
+    generate(
+        model,
+        "The meaning of life is ",
+    )

@@ -80,7 +80,7 @@ GROUP BY Borrow.reader_id
 ORDER BY COUNT(*) DESC
 LIMIT 10;
 
--- 创建一个读者借书信息的视图,该视图包含读者号、姓名、所借图书号、图书名和借期
+-- 创建一个读者借书信息的视图，该视图包含读者号、姓名、所借图书号、图书名和借期
 
 CREATE OR REPLACE VIEW BORROW_INFO AS 
 	 (

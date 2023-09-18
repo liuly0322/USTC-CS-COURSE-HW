@@ -10,11 +10,11 @@
 ---
 
 ### 任务描述
-**本关任务**：首先，熟悉 SysYF IR 的应用编程接口。然后，通过调用 SysYF IR 应用编程接口，为给定的 5 个 SysYF 程序手工编写 C++代码，以生成并输出与 sy 文件功能相同的 ll 文件。
+**本关任务**：首先，熟悉 SysYF IR 的应用编程接口。然后，通过调用 SysYF IR 应用编程接口，为给定的 5 个 SysYF 程序手工编写 C++ 代码，以生成并输出与 sy 文件功能相同的 ll 文件。
 
 ### 相关知识
 #### SysYF IR 应用编程接口
-由于 LLVM IR 官方的 C++应用编程接口的文档内容繁多，本实训项目提供 SysYF IR 应用编程接口库，该库用 C++编写，可以用于生成 LLVM IR 的子集。你需要阅读**SysYF IR 核心类的介绍**`SysYFIR.md`。  
+由于 LLVM IR 官方的 C++ 应用编程接口的文档内容繁多，本实训项目提供 SysYF IR 应用编程接口库，该库用 C++ 编写，可以用于生成 LLVM IR 的子集。你需要阅读**SysYF IR 核心类的介绍**`SysYFIR.md`。  
 本关要求你根据 AST，使用 SysYF IR 应用编程接口来为特定 SysYF 程序手工构建 LLVM IR。你需要先仔细阅读文档`doc/SysYFIR.md`以了解其接口的设计。
 
 #### 样例学习
@@ -106,7 +106,7 @@
 </details>
 
 为了更直观地感受并学会使用 SysYF IR 应用编程接口，本实训项目提供了示例代码，位于`Student/task2/demo/go_upstairs_gen.cpp`。  
-该 C++程序会生成与 go_upstairs.c 逻辑相同的 LLVM IR 文件，在该 C++程序中提供了详尽的注释，请阅读理解，以便更好地开展你的实验！  
+该 C++ 程序会生成与 go_upstairs.c 逻辑相同的 LLVM IR 文件，在该 C++ 程序中提供了详尽的注释，请阅读理解，以便更好地开展你的实验！  
 
 ### 本关具体任务
 1. 你需要在`Student/task2/cpp/`文件夹中，调用 SysYF IR 应用编程接口，编写自己的 `assign_gen.cpp`、`func_gen.cpp`、`if_gen.cpp`、`while_gen.cpp`和`io_gen.cpp`程序，以生成与第 1 关的五个 sy 程序相同逻辑功能的 ll 文件。

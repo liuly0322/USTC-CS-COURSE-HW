@@ -1,6 +1,6 @@
--- 设计一个触发器，实现：当一本书被预约时, 自动将 Book 表中相应图书的 status 修改为 2，并增加 reserve_times
+-- 设计一个触发器，实现：当一本书被预约时，自动将 Book 表中相应图书的 status 修改为 2，并增加 reserve_times
 
--- 当某本预约的书被借出时或者读者取消预约时, 自动减少 reserve_times
+-- 当某本预约的书被借出时或者读者取消预约时，自动减少 reserve_times
 
 CREATE TRIGGER RESERVEBOOK AFTER INSERT ON RESERVE 
 FOR EACH ROW BEGIN 

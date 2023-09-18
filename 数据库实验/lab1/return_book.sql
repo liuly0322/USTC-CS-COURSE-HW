@@ -26,7 +26,7 @@ CREATE PROCEDURE RETURN_BOOK(IN RETURN_READER_ID CHAR
 	        reader_id = RETURN_READER_ID
 	        AND book_id = RETURN_BOOK_ID
 	        AND return_date IS NULL;
-	    -- 如果没有预约记录, status_ 设为 0，否则为 2
+	    -- 如果没有预约记录，status_ 设为 0，否则为 2
 	    IF NOT EXISTS(
 	        SELECT *
 	        FROM Reserve

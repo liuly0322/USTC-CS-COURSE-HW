@@ -15,7 +15,7 @@
 
 ### 相关知识
 #### LLVM IR 介绍
-[LLVM](https://llvm.org/)是一个开源的编译器基础设施，用 C++语言编写，包含一系列模块化的编译器组件和工具链，用来支持编译器前端和后端的开发。IR 的全称是 Intermediate Representation，即中间表示。LLVM IR 是一种类型化的三地址中间表示；每条指令只做单一的运算，运算的源操作数和目的操作数都标有类型信息。  
+[LLVM](https://llvm.org/)是一个开源的编译器基础设施，用 C++ 语言编写，包含一系列模块化的编译器组件和工具链，用来支持编译器前端和后端的开发。IR 的全称是 Intermediate Representation，即中间表示。LLVM IR 是一种类型化的三地址中间表示；每条指令只做单一的运算，运算的源操作数和目的操作数都标有类型信息。  
 LLVM IR 的具体指令可以参考[Reference Manual](http://llvm.org/docs/LangRef.html)。但是你会发现其内容庞杂，为便于你尽快了解本实训项目需要涉及的 LLVM IR 指令子集，请查看本实训提供的**精简的 IR Reference 手册**[`doc/SysYFIR.md`](SysYFIR.md)。  
 作为一开始的参考，你可以先阅读其中的`IR Features`和`IR Format`两节，后续有需要再仔细查阅和参考。
 

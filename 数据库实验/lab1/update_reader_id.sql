@@ -1,4 +1,4 @@
--- 设计一个存储过程 updateReaderID,实现对读者表的 ID 的修改
+-- 设计一个存储过程 updateReaderID，实现对读者表的 ID 的修改
 
 DROP PROCEDURE IF EXISTS UPDATE_READER_ID;
 
